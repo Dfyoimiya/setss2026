@@ -1,11 +1,12 @@
 [project]
-name = "backend"
+name = "setss2026-backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "The backend of a class project -- website of setss2026, based on fastapi"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.135.2",
+    "pytest>=9.0.2",
     "uvicorn>=0.42.0",
 ]
 
