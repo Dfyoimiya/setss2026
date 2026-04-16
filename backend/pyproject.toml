@@ -6,11 +6,20 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.135.2",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg2-binary>=2.9.11",
+    "pydantic[email]>=2.12.5",
+    "pydantic-settings>=2.13.1",
     "pytest>=9.0.2",
+    "python-jose[cryptography]>=3.5.0",
+    "sqlalchemy>=2.0.48",
     "uvicorn>=0.42.0",
+    "bcrypt==3.2.2",
 ]
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "pytest>=9.0.2",
+    "ruff>=0.15.8",
 ]
