@@ -1,0 +1,59 @@
+# docker-compose.test.yml
+# 专用于集成测试的独立环境：
+#   - PostgreSQL 暴露到主机 5433（不与开发库 5432 冲突）
+#   - 后端服务映射到主机 8002 端口，与开发环境 8001 隔离
+#   - 容器名加 _test 后缀，与开发容器隔离
+
+version: '3.8'
+
+services:
+  postgres_test:
+    image: postgres:15-alpine
+    container_name: setss_postgres_test
+    environment:
+      POSTGRES_USER: setss_user
+      POSTGRES_PASSWORD: setss_password
+      POSTGRES_DB: setss_db_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+      # 自动执行初始化 SQL（seed 数据）
+      - ./scripts/seed_data.sql:/docker-entrypoint-initdb.d/01_seed_data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U setss_user -d setss_db_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    tmpfs:
+      - /var/lib/postgresql/data   # 每次启动清空，保证测试幂等性
+
+  backend_test:
+    build: .
+    container_name: setss_backend_test
+    ports:
+      - "8002:8001"
+    volumes:
+      - uploads_test_data:/app/uploads
+    environment:
+      DATABASE_URL: postgresql://setss_user:setss_password@postgres_test:5432/setss_db_test
+      SECRET_KEY: test-secret-key-for-integration-testing-only
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: "120"
+      UPLOAD_DIR: /app/uploads
+      MAX_UPLOAD_SIZE_MB: "20"
+    depends_on:
+      postgres_test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: "no"
+
+volumes:
+  postgres_test_data:
+  uploads_test_data:

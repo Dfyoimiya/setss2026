@@ -21,10 +21,19 @@ services:
       start_period: 10s
 
   backend:
-    build: . 
+    build: .
     container_name: setss_backend
     ports:
-      - "8000:8000" 
+      - "8001:8001"
+    volumes:
+      - uploads_data:/app/uploads
+    environment:
+      DATABASE_URL: postgresql://setss_user:setss_password@postgres:5432/setss_db
+      SECRET_KEY: changeme-generate-with-openssl-rand-hex-32
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: "120"
+      UPLOAD_DIR: /app/uploads
+      MAX_UPLOAD_SIZE_MB: "20"
     depends_on:
       postgres:
         condition: service_healthy
@@ -32,3 +41,4 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:
