@@ -67,7 +67,6 @@ export default function SubmitPaperPage() {
 
   // Step 1 form
   const {
-    register: reg1,
     handleSubmit: handle1,
     control: ctrl1,
     formState: { errors: errors1 },
@@ -75,7 +74,6 @@ export default function SubmitPaperPage() {
 
   // Step 2 form
   const {
-    register: reg2,
     handleSubmit: handle2,
     control: ctrl2,
     formState: { errors: errors2 },
@@ -128,7 +126,11 @@ export default function SubmitPaperPage() {
           style={{ margin: 0 }}
           validateStatus={errors2.coAuthors?.[idx]?.name ? 'error' : ''}
         >
-          <Input {...reg2(`coAuthors.${idx}.name`)} placeholder="姓名" />
+          <Controller
+            control={ctrl2}
+            name={`coAuthors.${idx}.name`}
+            render={({ field }) => <Input {...field} placeholder="姓名" />}
+          />
         </Form.Item>
       ),
     },
@@ -140,14 +142,24 @@ export default function SubmitPaperPage() {
           style={{ margin: 0 }}
           validateStatus={errors2.coAuthors?.[idx]?.email ? 'error' : ''}
         >
-          <Input {...reg2(`coAuthors.${idx}.email`)} placeholder="邮箱" />
+          <Controller
+            control={ctrl2}
+            name={`coAuthors.${idx}.email`}
+            render={({ field }) => <Input {...field} placeholder="邮箱" />}
+          />
         </Form.Item>
       ),
     },
     {
       title: '机构',
       key: 'institution',
-      render: (_, __, idx) => <Input {...reg2(`coAuthors.${idx}.institution`)} placeholder="机构" />,
+      render: (_, __, idx) => (
+        <Controller
+          control={ctrl2}
+          name={`coAuthors.${idx}.institution`}
+          render={({ field }) => <Input {...field} placeholder="机构" />}
+        />
+      ),
     },
     {
       title: '通讯作者',
@@ -197,14 +209,22 @@ export default function SubmitPaperPage() {
               validateStatus={errors1.title ? 'error' : ''}
               help={errors1.title?.message}
             >
-              <Input {...reg1('title')} />
+              <Controller
+                control={ctrl1}
+                name="title"
+                render={({ field }) => <Input {...field} />}
+              />
             </Form.Item>
             <Form.Item
               label={t('submission.abstract')}
               validateStatus={errors1.abstract ? 'error' : ''}
               help={errors1.abstract?.message}
             >
-              <Input.TextArea rows={6} {...reg1('abstract')} />
+              <Controller
+                control={ctrl1}
+                name="abstract"
+                render={({ field }) => <Input.TextArea rows={6} {...field} />}
+              />
             </Form.Item>
             <Form.Item
               label={t('submission.keywords')}
@@ -212,7 +232,13 @@ export default function SubmitPaperPage() {
               help={errors1.keywords?.message}
               extra="多个关键词用英文逗号分隔"
             >
-              <Input {...reg1('keywords')} placeholder="e.g., machine learning, software testing" />
+              <Controller
+                control={ctrl1}
+                name="keywords"
+                render={({ field }) => (
+                  <Input {...field} placeholder="e.g., machine learning, software testing" />
+                )}
+              />
             </Form.Item>
             <Form.Item
               label={t('submission.topic')}

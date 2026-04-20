@@ -1,5 +1,5 @@
 import { Card, Form, Input, Button, Typography, App } from 'antd'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
@@ -21,10 +21,18 @@ export default function Register() {
   const { message } = App.useApp()
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterForm>({ resolver: zodResolver(schema) })
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      password: '',
+      full_name: '',
+      institution: '',
+    },
+  })
 
   const registerMutation = useMutation({
     mutationFn: (data: RegisterForm) => authApi.register(data),
@@ -55,24 +63,52 @@ export default function Register() {
             validateStatus={errors.email ? 'error' : ''}
             help={errors.email?.message}
           >
-            <Input {...register('email')} placeholder="you@example.com" />
+            <Controller
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <Input {...field} placeholder="you@example.com" />
+              )}
+            />
           </Form.Item>
           <Form.Item
             label={t('auth.password')}
             validateStatus={errors.password ? 'error' : ''}
             help={errors.password?.message}
           >
-            <Input.Password {...register('password')} />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <Input.Password {...field} />
+              )}
+            />
           </Form.Item>
           <Form.Item
             label={t('auth.full_name')}
             validateStatus={errors.full_name ? 'error' : ''}
             help={errors.full_name?.message}
           >
-            <Input {...register('full_name')} />
+            <Controller
+              control={control}
+              name="full_name"
+              render={({ field }) => (
+                <Input {...field} />
+              )}
+            />
           </Form.Item>
-          <Form.Item label={t('auth.institution')}>
-            <Input {...register('institution')} />
+          <Form.Item
+            label={t('auth.institution')}
+            validateStatus={errors.institution ? 'error' : ''}
+            help={errors.institution?.message}
+          >
+            <Controller
+              control={control}
+              name="institution"
+              render={({ field }) => (
+                <Input {...field} />
+              )}
+            />
           </Form.Item>
           <Form.Item>
             <Button

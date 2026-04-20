@@ -1,5 +1,5 @@
 import { Card, Form, Input, Button, Typography, App } from 'antd'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
@@ -22,10 +22,16 @@ export default function Login() {
   const { message } = App.useApp()
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>({ resolver: zodResolver(schema) })
+  } = useForm<LoginForm>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginForm) => {
@@ -64,14 +70,26 @@ export default function Login() {
             validateStatus={errors.email ? 'error' : ''}
             help={errors.email?.message}
           >
-            <Input {...register('email')} placeholder="you@example.com" />
+            <Controller
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <Input {...field} placeholder="you@example.com" />
+              )}
+            />
           </Form.Item>
           <Form.Item
             label={t('auth.password')}
             validateStatus={errors.password ? 'error' : ''}
             help={errors.password?.message}
           >
-            <Input.Password {...register('password')} />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <Input.Password {...field} />
+              )}
+            />
           </Form.Item>
           <Form.Item>
             <Button
