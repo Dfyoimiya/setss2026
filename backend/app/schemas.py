@@ -291,3 +291,27 @@ class AssignReviewerRequest(BaseModel):
 class MessageResponse(BaseModel):
     message: str
     data: Any = None
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+
+class DownloadUrlResponse(BaseModel):
+    url: str
+    filename: str
+
+
+class AdminStatsResponse(BaseModel):
+    total_users: int
+    total_papers: int
+    papers_by_status: dict[str, int]
+    total_reviews: int
+    pending_reviews: int
+    total_registrations: int
+    registrations_by_type: dict[str, int]

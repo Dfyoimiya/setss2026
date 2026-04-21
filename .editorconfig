@@ -1,0 +1,32 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Python, shell scripts, config files
+[*.{py,sh,yml,yaml,toml,ini}]
+indent_style = space
+indent_size = 4
+
+# JavaScript, TypeScript, JSON, CSS, HTML, Markdown
+[*.{js,jsx,ts,tsx,json,css,scss,html,md,mdx}]
+indent_style = space
+indent_size = 2
+
+# Dockerfiles, Makefile
+[{Dockerfile,Dockerfile.*}]
+indent_style = space
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+# Markdown trailing whitespace is significant
+trim_trailing_whitespace = false

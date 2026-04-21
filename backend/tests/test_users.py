@@ -1,23 +1,38 @@
 """
 Author: K-ON! Team
-文件描述: 用户系统 API 测试
+文件描述: 用户系统 API 测试（适配邮件验证流程）
 """
 
 from fastapi.testclient import TestClient
+from app import models
 
 
-def test_register_success(client: TestClient):
+def _register_and_activate(client: TestClient, db, email: str, password: str = "Password123"):
+    """注册并直接激活账户（绕过邮件验证，用于测试）"""
+    resp = client.post(
+        "/api/v1/users/register",
+        json={"email": email, "password": password},
+    )
+    assert resp.status_code == 201
+    # 直接在数据库中激活账户
+    user = db.query(models.User).filter(models.User.email == email).first()
+    user.is_active = True
+    user.email_verified = True
+    db.commit()
+    return user
+
+
+def test_register_success(client: TestClient, db):
     resp = client.post(
         "/api/v1/users/register",
         json={"email": "test@example.com", "password": "Password123"},
     )
     assert resp.status_code == 201
     data = resp.json()
-    assert data["email"] == "test@example.com"
-    assert "hashed_password" not in data
+    assert "message" in data
 
 
-def test_register_duplicate_email(client: TestClient):
+def test_register_duplicate_email(client: TestClient, db):
     client.post(
         "/api/v1/users/register",
         json={"email": "dup@example.com", "password": "Password123"},
@@ -29,11 +44,8 @@ def test_register_duplicate_email(client: TestClient):
     assert resp.status_code == 400
 
 
-def test_login_success(client: TestClient):
-    client.post(
-        "/api/v1/users/register",
-        json={"email": "login@example.com", "password": "Password123"},
-    )
+def test_login_success(client: TestClient, db):
+    _register_and_activate(client, db, "login@example.com", "Password123")
     resp = client.post(
         "/api/v1/users/login",
         json={"email": "login@example.com", "password": "Password123"},
@@ -42,11 +54,8 @@ def test_login_success(client: TestClient):
     assert "access_token" in resp.json()
 
 
-def test_login_wrong_password(client: TestClient):
-    client.post(
-        "/api/v1/users/register",
-        json={"email": "fail@example.com", "password": "RightPass"},
-    )
+def test_login_wrong_password(client: TestClient, db):
+    _register_and_activate(client, db, "fail@example.com", "RightPass")
     resp = client.post(
         "/api/v1/users/login",
         json={"email": "fail@example.com", "password": "WrongPass"},
@@ -54,11 +63,20 @@ def test_login_wrong_password(client: TestClient):
     assert resp.status_code == 401
 
 
-def test_get_me(client: TestClient):
+def test_login_unverified_rejected(client: TestClient, db):
     client.post(
         "/api/v1/users/register",
-        json={"email": "me@example.com", "password": "Password123"},
+        json={"email": "unverified@example.com", "password": "Password123"},
     )
+    resp = client.post(
+        "/api/v1/users/login",
+        json={"email": "unverified@example.com", "password": "Password123"},
+    )
+    assert resp.status_code == 400
+
+
+def test_get_me(client: TestClient, db):
+    _register_and_activate(client, db, "me@example.com", "Password123")
     login_resp = client.post(
         "/api/v1/users/login",
         json={"email": "me@example.com", "password": "Password123"},
@@ -69,11 +87,8 @@ def test_get_me(client: TestClient):
     assert resp.json()["email"] == "me@example.com"
 
 
-def test_change_password(client: TestClient):
-    client.post(
-        "/api/v1/users/register",
-        json={"email": "chpwd@example.com", "password": "OldPass123"},
-    )
+def test_change_password(client: TestClient, db):
+    _register_and_activate(client, db, "chpwd@example.com", "OldPass123")
     login_resp = client.post(
         "/api/v1/users/login",
         json={"email": "chpwd@example.com", "password": "OldPass123"},
@@ -88,7 +103,6 @@ def test_change_password(client: TestClient):
     )
     assert resp.status_code == 200
 
-    # 新密码可以登录
     resp2 = client.post(
         "/api/v1/users/login",
         json={"email": "chpwd@example.com", "password": "NewPass456"},

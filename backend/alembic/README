@@ -1,0 +1,17 @@
+Generic single-database configuration.
+
+## Usage
+
+```bash
+# Create a new migration (auto-detect changes)
+cd backend && uv run alembic revision --autogenerate -m "add users table"
+
+# Apply migrations
+uv run alembic upgrade head
+
+# Downgrade one revision
+uv run alembic downgrade -1
+
+# View current revision
+uv run alembic current
+```

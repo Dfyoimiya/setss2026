@@ -20,13 +20,31 @@ services:
       retries: 5
       start_period: 10s
 
+  minio:
+    image: minio/minio:latest
+    container_name: setss_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web Console
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
   backend:
     build: .
     container_name: setss_backend
     ports:
       - "8001:8001"
-    volumes:
-      - uploads_data:/app/uploads
     environment:
       DATABASE_URL: postgresql://setss_user:setss_password@postgres:5432/setss_db
       SECRET_KEY: changeme-generate-with-openssl-rand-hex-32
@@ -34,11 +52,29 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: "120"
       UPLOAD_DIR: /app/uploads
       MAX_UPLOAD_SIZE_MB: "20"
+      # MinIO
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: setss-papers
+      MINIO_SECURE: "false"
+      MINIO_PUBLIC_ENDPOINT: http://localhost:9000
+      # 邮件（填入真实配置后将 EMAIL_ENABLED 改为 true）
+      EMAIL_ENABLED: "false"
+      SMTP_HOST: smtp.example.com
+      SMTP_PORT: "465"
+      SMTP_USER: noreply@example.com
+      SMTP_PASSWORD: ""
+      SMTP_FROM_NAME: SETSS 2026
+      SMTP_SSL: "true"
+      FRONTEND_BASE_URL: http://localhost:5173
     depends_on:
       postgres:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     restart: unless-stopped
 
 volumes:
   postgres_data:
-  uploads_data:
+  minio_data:

@@ -78,11 +78,11 @@ export default function Login() {
               )}
             />
           </Form.Item>
-          <Form.Item
-            label={t('auth.password')}
-            validateStatus={errors.password ? 'error' : ''}
-            help={errors.password?.message}
-          >
+          <Form.Item>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <span style={{ fontSize: 14 }}>{t('auth.password')}</span>
+              <Link to="/forgot-password" style={{ fontSize: 13 }}>忘记密码？</Link>
+            </div>
             <Controller
               control={control}
               name="password"
@@ -90,6 +90,7 @@ export default function Login() {
                 <Input.Password {...field} />
               )}
             />
+            {errors.password && <div style={{ color: '#ff4d4f', fontSize: 12, marginTop: 4 }}>{errors.password.message}</div>}
           </Form.Item>
           <Form.Item>
             <Button

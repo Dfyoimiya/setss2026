@@ -1,6 +1,6 @@
 """
 Author: K-ON! Team
-文件描述: 管理员路由 — 用户管理、论文管理、评审管理、注册管理、系统配置
+文件描述: 管理员路由 — 用户管理、论文管理、评审管理、注册管理、系统配置、统计
 """
 
 import csv
@@ -8,12 +8,14 @@ import io
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.auth import require_admin
 from app.crud import crud_paper, crud_registration, crud_review, crud_user
 from app.database import get_db
+from app.email_service import send_review_reminder_email, send_paper_status_email
 
 router = APIRouter(prefix="/admin", tags=["管理员"])
 
@@ -298,3 +300,86 @@ def admin_update_config(
     db.commit()
     db.refresh(cfg)
     return cfg
+
+
+# ─────────────────────────────────────────────
+# 统计概览
+# ─────────────────────────────────────────────
+
+
+@router.get("/stats", response_model=schemas.AdminStatsResponse, summary="管理员统计概览")
+def get_stats(
+    _: models.User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    total_users = db.query(models.User).count()
+    total_papers = db.query(models.Paper).count()
+
+    paper_statuses = db.query(models.Paper.status, func.count(models.Paper.id)).group_by(models.Paper.status).all()
+    papers_by_status = {s: c for s, c in paper_statuses}
+
+    total_reviews = db.query(models.Review).count()
+    pending_reviews = db.query(models.Review).filter(models.Review.status == "pending").count()
+
+    total_registrations = db.query(models.Registration).count()
+    reg_types = db.query(models.Registration.registration_type, func.count(models.Registration.id)).group_by(models.Registration.registration_type).all()
+    registrations_by_type = {t: c for t, c in reg_types}
+
+    return {
+        "total_users": total_users,
+        "total_papers": total_papers,
+        "papers_by_status": papers_by_status,
+        "total_reviews": total_reviews,
+        "pending_reviews": pending_reviews,
+        "total_registrations": total_registrations,
+        "registrations_by_type": registrations_by_type,
+    }
+
+
+# ─────────────────────────────────────────────
+# 邮件操作
+# ─────────────────────────────────────────────
+
+
+@router.post("/papers/{paper_id}/notify-status", response_model=schemas.MessageResponse, summary="发送论文状态通知邮件")
+def notify_paper_status(
+    paper_id: str,
+    _: models.User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    paper = crud_paper.get_paper(db, paper_id)
+    if not paper:
+        raise HTTPException(status_code=404, detail="论文不存在")
+    if not paper.submitter:
+        raise HTTPException(status_code=400, detail="论文无提交者信息")
+    send_paper_status_email(
+        paper.submitter.email,
+        paper.submitter.full_name or "",
+        paper.title,
+        paper.status,
+    )
+    return {"message": "通知邮件已发送"}
+
+
+@router.post("/reviews/remind-pending", response_model=schemas.MessageResponse, summary="向未完成审稿的审稿人发送提醒")
+def remind_pending_reviewers(
+    _: models.User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    pending = (
+        db.query(models.Review)
+        .filter(models.Review.status == "pending")
+        .all()
+    )
+    reviewer_counts: dict[str, int] = {}
+    for r in pending:
+        reviewer_counts[r.reviewer_id] = reviewer_counts.get(r.reviewer_id, 0) + 1
+
+    sent = 0
+    for reviewer_id, count in reviewer_counts.items():
+        reviewer = crud_user.get_user_by_id(db, reviewer_id)
+        if reviewer and reviewer.is_active:
+            send_review_reminder_email(reviewer.email, reviewer.full_name or "", count)
+            sent += 1
+
+    return {"message": f"已向 {sent} 位审稿人发送提醒"}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Layout, Menu, Button, Dropdown, Space, Select } from 'antd'
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
@@ -11,11 +12,22 @@ export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
   const { isLoggedIn, isAdmin, isReviewer, user, logout } = useAuthStore()
+  const isHome = location.pathname === '/'
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    if (!isHome) return
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [isHome])
 
   const handleLogout = () => {
     logout()
     navigate('/')
   }
+
+  const transparent = isHome && !scrolled
 
   const publicItems = [
     { key: '/', label: <Link to="/">{t('nav.home')}</Link> },
@@ -31,30 +43,20 @@ export default function Navbar() {
         ...(isReviewer()
           ? [{ key: '/review', label: <Link to="/review">{t('nav.review')}</Link> }]
           : []),
-        {
-          key: '/conference-registration',
-          label: <Link to="/conference-registration">{t('nav.register')}</Link>,
-        },
+        { key: '/conference-registration', label: <Link to="/conference-registration">{t('nav.register')}</Link> },
         ...(isAdmin()
-          ? [{ key: '/admin', label: <Link to="/admin/users">{t('nav.admin')}</Link> }]
+          ? [{ key: '/admin', label: <Link to="/admin/dashboard">{t('nav.admin')}</Link> }]
           : []),
       ]
     : []
 
   const menuItems = [...publicItems, ...protectedItems]
-  const selectedKey = menuItems.find((i) => i.key === location.pathname)?.key ?? '/'
+  const selectedKey = menuItems.find((i) => location.pathname.startsWith(i.key) && i.key !== '/')?.key
+    ?? (location.pathname === '/' ? '/' : undefined)
 
   const userMenuItems = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: <Link to="/profile">{t('nav.profile')}</Link>,
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: <span onClick={handleLogout}>{t('nav.logout')}</span>,
-    },
+    { key: 'profile', icon: <UserOutlined />, label: <Link to="/profile">{t('nav.profile')}</Link> },
+    { key: 'logout', icon: <LogoutOutlined />, label: <span onClick={handleLogout}>{t('nav.logout')}</span> },
   ]
 
   return (
@@ -62,14 +64,15 @@ export default function Navbar() {
       style={{
         display: 'flex',
         alignItems: 'center',
-        background: '#001529',
+        background: transparent ? 'transparent' : '#001529',
         padding: '0 24px',
         position: 'sticky',
         top: 0,
         zIndex: 100,
+        transition: 'background 0.3s ease',
+        boxShadow: transparent ? 'none' : '0 2px 8px rgba(0,0,0,0.3)',
       }}
     >
-      {/* Logo */}
       <Link
         to="/"
         style={{
@@ -78,21 +81,25 @@ export default function Navbar() {
           fontWeight: 700,
           marginRight: 32,
           whiteSpace: 'nowrap',
+          letterSpacing: 1,
         }}
       >
         SETSS 2026
       </Link>
 
-      {/* 导航菜单 */}
       <Menu
         theme="dark"
         mode="horizontal"
-        selectedKeys={[selectedKey]}
+        selectedKeys={selectedKey ? [selectedKey] : []}
         items={menuItems}
-        style={{ flex: 1, minWidth: 0 }}
+        style={{
+          flex: 1,
+          minWidth: 0,
+          background: 'transparent',
+          borderBottom: 'none',
+        }}
       />
 
-      {/* 右侧：语言切换 + 用户操作 */}
       <Space style={{ marginLeft: 16 }}>
         <Select
           value={i18n.language.startsWith('zh') ? 'zh' : 'en'}
@@ -103,6 +110,8 @@ export default function Navbar() {
           ]}
           size="small"
           style={{ width: 70 }}
+          variant="borderless"
+          styles={{ popup: { root: { minWidth: 80 } } }}
         />
         {isLoggedIn() ? (
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">

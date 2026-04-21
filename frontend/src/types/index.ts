@@ -145,3 +145,13 @@ export const RECOMMENDATION_LABELS: Record<string, string> = {
   reject: '拒绝',
   revise: '需要修改',
 }
+
+export interface AdminStats {
+  total_users: number
+  total_papers: number
+  papers_by_status: Record<string, number>
+  total_reviews: number
+  pending_reviews: number
+  total_registrations: number
+  registrations_by_type: Record<string, number>
+}

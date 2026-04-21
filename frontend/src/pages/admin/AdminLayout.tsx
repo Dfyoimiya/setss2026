@@ -1,5 +1,6 @@
 import { Layout, Menu } from 'antd'
 import {
+  DashboardOutlined,
   TeamOutlined,
   FileTextOutlined,
   AuditOutlined,
@@ -17,6 +18,7 @@ export default function AdminLayout() {
   const location = useLocation()
 
   const menuItems = [
+    { key: '/admin/dashboard', icon: <DashboardOutlined />, label: <Link to="/admin/dashboard">数据概览</Link> },
     { key: '/admin/users', icon: <TeamOutlined />, label: <Link to="/admin/users">{t('admin.users')}</Link> },
     { key: '/admin/papers', icon: <FileTextOutlined />, label: <Link to="/admin/papers">{t('admin.papers')}</Link> },
     { key: '/admin/reviews', icon: <AuditOutlined />, label: <Link to="/admin/reviews">{t('admin.reviews')}</Link> },

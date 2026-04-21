@@ -7,6 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc -b --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,6 +18,7 @@
     "@tanstack/react-query": "^5.99.0",
     "antd": "^6.3.5",
     "axios": "^1.15.0",
+    "framer-motion": "^12.38.0",
     "i18next": "^26.0.5",
     "i18next-browser-languagedetector": "^8.2.1",
     "react": "^18.3.1",

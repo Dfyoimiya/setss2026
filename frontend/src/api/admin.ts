@@ -1,5 +1,5 @@
 import apiClient from './client'
-import type { User, Paper, Review, Registration, Announcement, ConfigItem, PaginatedResponse } from '@/types'
+import type { User, Paper, Review, Registration, Announcement, ConfigItem, PaginatedResponse, AdminStats } from '@/types'
 
 export const adminApi = {
   // 用户
@@ -28,12 +28,16 @@ export const adminApi = {
     apiClient
       .delete(`/admin/papers/${paperId}/assign-reviewer/${reviewerId}`)
       .then((r) => r.data),
+  notifyPaperStatus: (paperId: string) =>
+    apiClient.post(`/admin/papers/${paperId}/notify-status`).then((r) => r.data),
 
   // 审稿
   listReviews: (page = 1, size = 20) =>
     apiClient
       .get<PaginatedResponse<Review>>('/admin/reviews/', { params: { page, size } })
       .then((r) => r.data),
+  remindPendingReviewers: () =>
+    apiClient.post('/admin/reviews/remind-pending').then((r) => r.data),
 
   // 报名
   listRegistrations: (page = 1, size = 20) =>
@@ -45,7 +49,7 @@ export const adminApi = {
       .patch<Registration>(`/admin/registrations/${id}/status`, { status })
       .then((r) => r.data),
 
-  // 公告（复用公告 API）
+  // 公告
   listAllAnnouncements: (page = 1, size = 20) =>
     apiClient
       .get<PaginatedResponse<Announcement>>('/announcements/', { params: { page, size } })
@@ -57,4 +61,7 @@ export const adminApi = {
     apiClient
       .put<ConfigItem>(`/admin/config/${key}`, { value, description })
       .then((r) => r.data),
+
+  // 统计
+  getStats: () => apiClient.get<AdminStats>('/admin/stats').then((r) => r.data),
 }

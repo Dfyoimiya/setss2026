@@ -45,6 +45,32 @@ export default function PaperDetailPage() {
     onError: () => message.error(t('common.operation_failed')),
   })
 
+  const handleDownload = async () => {
+    try {
+      const { url, filename } = await paperApi.getDownloadUrl(id!)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.target = '_blank'
+      a.click()
+    } catch {
+      message.error('下载失败，请重试')
+    }
+  }
+
+  const handleCameraReadyDownload = async () => {
+    try {
+      const { url, filename } = await paperApi.getCameraReadyUrl(id!)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.target = '_blank'
+      a.click()
+    } catch {
+      message.error('下载失败，请重试')
+    }
+  }
+
   if (isLoading) return <LoadingSpinner />
   if (isError || !paper) return <ErrorResult onRetry={refetch} />
 
@@ -72,7 +98,6 @@ export default function PaperDetailPage() {
         ]}
       />
 
-      {/* 元数据 */}
       <Card title="论文信息" style={{ marginBottom: 24 }}>
         <Descriptions bordered column={2}>
           <Descriptions.Item label={t('submission.submission_number')}>
@@ -99,7 +124,6 @@ export default function PaperDetailPage() {
         </Descriptions>
       </Card>
 
-      {/* 合著者 */}
       {paper.co_authors?.length > 0 && (
         <Card title={t('submission.co_authors')} style={{ marginBottom: 24 }}>
           <Table
@@ -112,21 +136,17 @@ export default function PaperDetailPage() {
         </Card>
       )}
 
-      {/* 文件 */}
       <Card title="文件管理">
         <Space direction="vertical" style={{ width: '100%' }}>
           {paper.file_path && (
             <div>
               <Typography.Text strong>投稿文件：</Typography.Text>{' '}
-              <Button
-                icon={<DownloadOutlined />}
-                href={paperApi.downloadUrl(id!)}
-                target="_blank"
-              >
+              <Button icon={<DownloadOutlined />} onClick={handleDownload}>
                 下载 PDF
               </Button>
             </div>
           )}
+
           {paper.status === 'accepted' && (
             <div>
               <Typography.Text strong>{t('submission.camera_ready')}：</Typography.Text>
@@ -154,9 +174,12 @@ export default function PaperDetailPage() {
                 </Button>
               </Space>
               {paper.camera_ready_path && (
-                <Typography.Text type="success" style={{ display: 'block', marginTop: 8 }}>
-                  ✓ 终稿已上传
-                </Typography.Text>
+                <Space style={{ marginTop: 8 }}>
+                  <Typography.Text type="success">✓ 终稿已上传</Typography.Text>
+                  <Button size="small" icon={<DownloadOutlined />} onClick={handleCameraReadyDownload}>
+                    下载终稿
+                  </Button>
+                </Space>
               )}
             </div>
           )}

@@ -34,7 +34,12 @@ class User(Base):
     # 角色字符串，逗号分隔，如 "author,reviewer"
     # 可选值: author | reviewer | admin | attendee
     role = Column(String, default="author", nullable=False)
-    is_active = Column(Boolean, default=True, nullable=False)
+    # 注册后默认未激活，邮件验证后激活
+    is_active = Column(Boolean, default=False, nullable=False)
+    email_verified = Column(Boolean, default=False, nullable=False)
+    email_verify_token = Column(String, nullable=True, index=True)
+    password_reset_token = Column(String, nullable=True, index=True)
+    password_reset_expires = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

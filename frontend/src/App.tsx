@@ -9,6 +9,9 @@ import LoadingSpinner from '@/components/common/LoadingSpinner'
 // Auth
 const Login = lazy(() => import('@/pages/auth/Login'))
 const Register = lazy(() => import('@/pages/auth/Register'))
+const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'))
+const ResetPassword = lazy(() => import('@/pages/auth/ResetPassword'))
+const VerifyEmail = lazy(() => import('@/pages/auth/VerifyEmail'))
 
 // Home
 const HomePage = lazy(() => import('@/pages/home/HomePage'))
@@ -39,6 +42,7 @@ const RegistrationPage = lazy(() => import('@/pages/registration/RegistrationPag
 
 // Admin
 const AdminLayout = lazy(() => import('@/pages/admin/AdminLayout'))
+const AdminDashboard = lazy(() => import('@/pages/admin/DashboardPage'))
 const AdminUsersPage = lazy(() => import('@/pages/admin/UsersPage'))
 const AdminPapersPage = lazy(() => import('@/pages/admin/PapersPage'))
 const AdminReviewsPage = lazy(() => import('@/pages/admin/ReviewsPage'))
@@ -61,6 +65,9 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="verify-email" element={<VerifyEmail />} />
 
             {/* 需要登录 */}
             <Route element={<ProtectedRoute />}>
@@ -75,7 +82,8 @@ export default function App() {
               {/* 需要管理员 */}
               <Route element={<AdminRoute />}>
                 <Route path="admin" element={<AdminLayout />}>
-                  <Route index element={<Navigate to="users" replace />} />
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="users" element={<AdminUsersPage />} />
                   <Route path="papers" element={<AdminPapersPage />} />
                   <Route path="reviews" element={<AdminReviewsPage />} />

@@ -25,12 +25,15 @@ def get_users(
     return users, total
 
 
-def create_user(db: Session, user_in: schemas.UserCreate) -> models.User:
+def create_user(db: Session, user_in: schemas.UserCreate, verify_token: str | None = None) -> models.User:
     db_user = models.User(
         email=user_in.email,
         hashed_password=get_password_hash(user_in.password),
         full_name=user_in.full_name,
         institution=user_in.institution,
+        is_active=verify_token is None,  # 无需验证时直接激活
+        email_verified=verify_token is None,
+        email_verify_token=verify_token,
     )
     db.add(db_user)
     db.commit()
