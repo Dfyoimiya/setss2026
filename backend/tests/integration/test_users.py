@@ -5,14 +5,17 @@ Author: K-ON! Team
 """
 
 import uuid
+
 import httpx
-import pytest
 
 from tests.integration.conftest import (
-    ADMIN_EMAIL, ADMIN_PASSWORD,
-    AUTHOR1_EMAIL, AUTHOR1_PASSWORD,
-    DISABLED_EMAIL, DISABLED_PASSWORD,
+    ADMIN_EMAIL,
     ADMIN_ID,
+    ADMIN_PASSWORD,
+    AUTHOR1_EMAIL,
+    AUTHOR1_PASSWORD,
+    DISABLED_EMAIL,
+    DISABLED_PASSWORD,
 )
 
 

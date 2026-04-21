@@ -4,7 +4,7 @@ Author: K-ON! Team
 """
 
 import httpx
-import pytest
+
 from tests.integration.conftest import ANN1_ID, ANN4_ID
 
 

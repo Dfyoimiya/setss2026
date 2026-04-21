@@ -4,7 +4,7 @@ Author: K-ON! Team
 """
 
 import secrets
-from datetime import timedelta, timezone, datetime
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -20,8 +20,8 @@ from app.config import settings
 from app.crud import crud_user
 from app.database import get_db
 from app.email_service import (
-    send_verification_email,
     send_password_reset_email,
+    send_verification_email,
 )
 from app.models import User
 
@@ -77,7 +77,7 @@ def forgot_password(body: schemas.ForgotPasswordRequest, db: Session = Depends(g
     if user and user.is_active:
         token = secrets.token_urlsafe(32)
         user.password_reset_token = token
-        user.password_reset_expires = datetime.now(timezone.utc) + timedelta(hours=1)
+        user.password_reset_expires = datetime.now(UTC) + timedelta(hours=1)
         db.commit()
         send_password_reset_email(user.email, user.full_name or "", token)
     return {"message": "如果该邮箱已注册，您将收到密码重置邮件"}
@@ -88,7 +88,7 @@ def reset_password(body: schemas.ResetPasswordRequest, db: Session = Depends(get
     user = db.query(User).filter(User.password_reset_token == body.token).first()
     if not user or not user.password_reset_expires:
         raise HTTPException(status_code=400, detail="重置链接无效或已过期")
-    if user.password_reset_expires < datetime.now(timezone.utc):
+    if user.password_reset_expires < datetime.now(UTC):
         raise HTTPException(status_code=400, detail="重置链接已过期，请重新申请")
     user.hashed_password = get_password_hash(body.new_password)
     user.password_reset_token = None

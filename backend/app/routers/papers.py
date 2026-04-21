@@ -8,13 +8,12 @@ import json
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
-from app import schemas
+from app import schemas, storage
 from app.auth import get_current_active_user, has_role
 from app.config import settings
 from app.crud import crud_paper
 from app.database import get_db
 from app.models import User
-from app import storage
 
 router = APIRouter(prefix="/papers", tags=["论文投稿"])
 

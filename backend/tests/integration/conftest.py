@@ -5,8 +5,9 @@ Author: K-ON! Team
 """
 
 import os
-import pytest
+
 import httpx
+import pytest
 
 # 从环境变量读取后端地址，默认指向 docker-compose.test.yml 映射的 8002 端口
 BASE_URL = os.getenv("INTEGRATION_BASE_URL", "http://localhost:8002")

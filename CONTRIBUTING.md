@@ -11,12 +11,21 @@
 ```
 main       ← 生产分支，只接受合并，禁止直接推送
   ↑
-develop    ← 日常开发分支，功能完成后合并至此
+dev        ← 日常开发分支，功能完成后合并至此
   ↑
-feature/*  ← 功能分支，从 develop 切出
-fix/*      ← Bug 修复分支
+feature/*  ← 功能分支，从 dev 切出
+bugfix/*   ← Bug 修复分支
 hotfix/*   ← 线上紧急修复，从 main 切出
-release/*  ← 发版分支
+refactor/* ← 代码重构（无功能变化），从 dev 切出
+docs/*     ← 文档更新，从 dev 切出
+test/*     ← 补充/增加测试用例，从 dev 切出
+chore/*    ← 杂项（构建脚本、工具配置、清理等）
+deps/*     ← 依赖升级/降级
+ci/*       ← CI/CD 流水线变更
+style/*    ← 代码格式、命名、无逻辑变更
+perf/*     ← 性能优化
+config/*   ← 业务配置变更（无代码变化）
+exper/*    ← 实验性代码，不合并
 ```
 
 ### 分支命名规范
@@ -64,9 +73,9 @@ Closes #123
 
 ## 🔀 Pull Request 流程
 
-1. **创建分支**：从最新的 `develop` 切出你的分支
+1. **创建分支**：从最新的 `dev` 切出你的分支
 2. **本地验证**：确保 `make lint` 和 `make test`（或前端等价命令）全部通过
-3. **提交 PR**：推送到远程并创建 Pull Request 到 `develop`
+3. **提交 PR**：推送到远程并创建 Pull Request 到 `dev`
 4. **填写模板**：按 PR 模板填写变更说明、测试方式、影响范围
 5. **Code Review**：至少 **1 位** 团队成员 Approve 后方可合并
 6. **CI 通过**：所有 GitHub Actions 检查必须绿灯

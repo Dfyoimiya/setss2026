@@ -6,11 +6,11 @@ Author: Finley
 文件描述:
 """
 
-from fastapi import FastAPI, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import Depends, FastAPI, HTTPException, status
 from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 
-from . import models, schemas, database
+from . import database, models, schemas
 
 # 初始化数据库表（仅供开发测试使用，生产环境推荐使用 Alembic 做迁移）
 models.Base.metadata.create_all(bind=database.engine)

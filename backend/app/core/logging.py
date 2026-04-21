@@ -6,9 +6,6 @@ and human-readable format in development.
 
 import logging
 import sys
-from typing import Any
-
-from app.config import settings
 
 
 class _ColourFormatter(logging.Formatter):

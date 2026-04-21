@@ -4,12 +4,16 @@ Author: K-ON! Team
 """
 
 import io
+
 import httpx
-import pytest
 
 from tests.integration.conftest import (
-    AUTHOR1_ID, AUTHOR2_ID,
-    PAPER1_ID, PAPER2_ID, PAPER3_ID, PAPER4_ID, PAPER5_ID,
+    AUTHOR1_ID,
+    AUTHOR2_ID,
+    PAPER1_ID,
+    PAPER2_ID,
+    PAPER3_ID,
+    PAPER5_ID,
 )
 
 # 最小合法 PDF（1字节 header 不合法，用 application/octet-stream 绕过类型检查）

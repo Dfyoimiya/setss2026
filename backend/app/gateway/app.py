@@ -11,8 +11,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers import (
-    announcements,
     admin,
+    announcements,
     config_router,
     papers,
     registrations,
@@ -64,7 +64,7 @@ app.include_router(admin.router, prefix=PREFIX)
 def on_startup():
     try:
         from app import models
-        from app.database import engine, SessionLocal
+        from app.database import SessionLocal, engine
 
         models.Base.metadata.create_all(bind=engine)
 

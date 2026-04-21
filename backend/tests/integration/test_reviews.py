@@ -4,12 +4,12 @@ Author: K-ON! Team
 """
 
 import httpx
-import pytest
 
 from tests.integration.conftest import (
-    REVIEWER1_ID, REVIEWER2_ID,
-    PAPER1_ID, PAPER3_ID,
-    REVIEW1_ID, REVIEW2_ID,
+    PAPER1_ID,
+    REVIEW1_ID,
+    REVIEW2_ID,
+    REVIEWER1_ID,
 )
 
 

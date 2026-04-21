@@ -15,7 +15,7 @@ from app import models, schemas
 from app.auth import require_admin
 from app.crud import crud_paper, crud_registration, crud_review, crud_user
 from app.database import get_db
-from app.email_service import send_review_reminder_email, send_paper_status_email
+from app.email_service import send_paper_status_email, send_review_reminder_email
 
 router = APIRouter(prefix="/admin", tags=["管理员"])
 

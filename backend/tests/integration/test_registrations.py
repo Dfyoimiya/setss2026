@@ -4,13 +4,12 @@ Author: K-ON! Team
 """
 
 import uuid
+
 import httpx
-import pytest
 
 from tests.integration.conftest import (
-    ATTENDEE1_EMAIL, ATTENDEE1_PASSWORD,
-    REG_AUTHOR1_ID, REG_ATTENDEE2_ID,
-    AUTHOR1_ID, AUTHOR2_ID,
+    AUTHOR1_ID,
+    REG_AUTHOR1_ID,
 )
 
 
@@ -152,7 +151,7 @@ class TestAdminUserManagement:
         """管理员可修改用户角色"""
         # 将 attendee1 升级为 reviewer
         resp = api.patch(
-            f"/api/v1/admin/users/00000000-0000-0000-0000-000000000007/role",
+            "/api/v1/admin/users/00000000-0000-0000-0000-000000000007/role",
             json={"role": "reviewer"},
             headers=admin_headers,
         )
@@ -160,7 +159,7 @@ class TestAdminUserManagement:
         assert resp.json()["role"] == "reviewer"
         # 恢复
         api.patch(
-            f"/api/v1/admin/users/00000000-0000-0000-0000-000000000007/role",
+            "/api/v1/admin/users/00000000-0000-0000-0000-000000000007/role",
             json={"role": "attendee"},
             headers=admin_headers,
         )

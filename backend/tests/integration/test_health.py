@@ -4,7 +4,6 @@ Author: K-ON! Team
 """
 
 import httpx
-from tests.integration.conftest import BASE_URL
 
 
 class TestHealthCheck:
