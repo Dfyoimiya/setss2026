@@ -1,0 +1,73 @@
+# ===========================
+# 敏感配置文件
+# ===========================
+.env
+.env.local
+.env.*.local
+
+# ===========================
+# Python
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ===========================
+# Node / Frontend
+# ===========================
+node_modules/
+frontend/dist/
+frontend/build/
+*.tsbuildinfo
+
+# ===========================
+# IDE / 编辑器
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===========================
+# macOS
+# ===========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===========================
+# Docker
+# ===========================
+docker-compose.override.yml
+
+# ===========================
+# 数据库 / 本地数据
+# ===========================
+*.sqlite
+*.db
+postgres_data/
+minio_data/
+
+# ===========================
+# 日志
+# ===========================
+*.log
+logs/
+
+# Backend 虚拟环境
+backend/.venv/

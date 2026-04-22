@@ -1,0 +1,34 @@
+name: Backend Integration Tests
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "backend/**"
+      - "docker-compose*.yml"
+      - ".github/workflows/backend-integration-test.yml"
+  pull_request:
+    branches: [main, master]
+    paths:
+      - "backend/**"
+      - "docker-compose*.yml"
+      - ".github/workflows/backend-integration-test.yml"
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env
+        run: cp .env.example .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY || 'ci-test-secret-key' }}" >> .env
+
+      - name: Run integration tests
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+
+      - name: Cleanup
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.test.yml down -v

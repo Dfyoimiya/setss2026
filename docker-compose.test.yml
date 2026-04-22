@@ -1,0 +1,17 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: setss_test
+
+  backend:
+    build:
+      target: dev
+    volumes:
+      - ./backend:/app
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-setss_user}:${POSTGRES_PASSWORD:-setss_dev_password}@postgres/setss_test
+      UV_PROJECT_ENVIRONMENT: /tmp/.venv
+    command: >
+      sh -c "uv sync --group dev && /tmp/.venv/bin/alembic upgrade head && /tmp/.venv/bin/pytest tests/ -v"
+    ports:
+      - "8000:8000"
