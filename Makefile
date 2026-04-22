@@ -1,0 +1,25 @@
+.PHONY: dev dev-down migrate migrate-new test-unit test-integration build
+
+dev:
+	cp -n .env.example .env 2>/dev/null || true
+	docker compose up -d --build
+
+dev-down:
+	docker compose down
+
+migrate:
+	docker compose exec backend alembic upgrade head
+
+migrate-new:
+	@read -p "Migration message: " msg; \
+	docker compose exec backend alembic revision --autogenerate -m "$$msg"
+
+test-unit:
+	cd backend && uv sync --group dev && uv run pytest tests/unit -v
+
+test-integration:
+	docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+	docker compose -f docker-compose.yml -f docker-compose.test.yml down -v
+
+build:
+	docker compose -f docker-compose.yml build
