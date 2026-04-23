@@ -1,8 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.items import router as items_router
 from app.core.config import settings
+from app.core.response import ApiResponse, ok
+from app.core.exceptions import AppException
+from shared.status_codes import BizCode
 
 app = FastAPI(
     title="SETSS2026 API",
@@ -18,14 +24,71 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ===== Global exception handlers =====
+
+@app.exception_handler(AppException)
+async def app_exception_handler(request: Request, exc: AppException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=ApiResponse.error(
+            biz_code=exc.biz_code,
+            message=exc.message,
+        ).model_dump(),
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = [
+        {"field": ".".join(str(x) for x in e["loc"]), "msg": e["msg"]}
+        for e in exc.errors()
+    ]
+    return JSONResponse(
+        status_code=422,
+        content=ApiResponse.error(
+            biz_code=BizCode.PARAM_ERROR,
+            message="Request validation failed",
+            data={"errors": errors},
+        ).model_dump(),
+    )
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    # If detail is already our ApiResponse format, pass through
+    if isinstance(exc.detail, dict) and "code" in exc.detail:
+        return JSONResponse(status_code=exc.status_code, content=exc.detail)
+
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=ApiResponse.error(
+            biz_code=BizCode.INTERNAL_ERROR,
+            message=str(exc.detail),
+        ).model_dump(),
+    )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content=ApiResponse.error(
+            biz_code=BizCode.INTERNAL_ERROR,
+            message=str(exc) if settings.DEBUG else "Internal server error",
+        ).model_dump(),
+    )
+
+
+# ===== Routes =====
+
 app.include_router(items_router)
 
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello World"}
+    return ok(data={"message": "Hello World"})
 
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok"}
+    return ok(data={"status": "ok"})
