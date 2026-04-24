@@ -71,3 +71,4 @@ logs/
 
 # Backend 虚拟环境
 backend/.venv/
+.claude/

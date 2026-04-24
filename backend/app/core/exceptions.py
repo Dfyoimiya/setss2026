@@ -6,6 +6,7 @@ into the standard JSON response format automatically.
 """
 
 from fastapi import HTTPException, status
+
 from app.core.status_codes import BizCode
 
 
@@ -244,4 +245,94 @@ class ItemAlreadyExistsException(ConflictException):
             message=message,
             code="ITEM_ALREADY_EXISTS",
             biz_code=BizCode.ITEM_ALREADY_EXISTS,
+        )
+
+
+class SubmissionNotFoundException(NotFoundException):
+    def __init__(self, message: str = "Submission not found"):
+        super().__init__(
+            message=message,
+            code="SUBMISSION_NOT_FOUND",
+            biz_code=BizCode.SUBMISSION_NOT_FOUND,
+        )
+
+
+class ReviewNotFoundException(NotFoundException):
+    def __init__(self, message: str = "Review not found"):
+        super().__init__(
+            message=message,
+            code="REVIEW_NOT_FOUND",
+            biz_code=BizCode.REVIEW_NOT_FOUND,
+        )
+
+
+class AssignmentNotFoundException(NotFoundException):
+    def __init__(self, message: str = "Review assignment not found"):
+        super().__init__(
+            message=message,
+            code="ASSIGNMENT_NOT_FOUND",
+            biz_code=BizCode.ASSIGNMENT_NOT_FOUND,
+        )
+
+
+class PeriodNotFoundException(NotFoundException):
+    def __init__(self, message: str = "Submission period not found"):
+        super().__init__(
+            message=message,
+            code="PERIOD_NOT_FOUND",
+            biz_code=BizCode.PERIOD_NOT_FOUND,
+        )
+
+
+class SubmissionAlreadyExistsException(ConflictException):
+    def __init__(self, message: str = "Submission already exists"):
+        super().__init__(
+            message=message,
+            code="SUBMISSION_ALREADY_EXISTS",
+            biz_code=BizCode.SUBMISSION_ALREADY_EXISTS,
+        )
+
+
+class PeriodClosedException(BusinessException):
+    def __init__(self, message: str = "Submission period is closed"):
+        super().__init__(
+            message=message,
+            code="PERIOD_CLOSED",
+            biz_code=BizCode.PERIOD_CLOSED,
+        )
+
+
+class ReviewDeadlineExceededException(BusinessException):
+    def __init__(self, message: str = "Review deadline has passed"):
+        super().__init__(
+            message=message,
+            code="REVIEW_DEADLINE_EXCEEDED",
+            biz_code=BizCode.REVIEW_DEADLINE_EXCEEDED,
+        )
+
+
+class RebuttalClosedException(BusinessException):
+    def __init__(self, message: str = "Rebuttal period is closed"):
+        super().__init__(
+            message=message,
+            code="REBUTTAL_CLOSED",
+            biz_code=BizCode.REBUTTAL_CLOSED,
+        )
+
+
+class InvalidStateTransitionException(BusinessException):
+    def __init__(self, message: str = "Invalid state transition"):
+        super().__init__(
+            message=message,
+            code="INVALID_STATE_TRANSITION",
+            biz_code=BizCode.INVALID_STATE_TRANSITION,
+        )
+
+
+class ReviewerAlreadyAssignedException(BusinessException):
+    def __init__(self, message: str = "Reviewer already assigned to this submission"):
+        super().__init__(
+            message=message,
+            code="REVIEWER_ALREADY_ASSIGNED",
+            biz_code=BizCode.REVIEWER_ALREADY_ASSIGNED,
         )

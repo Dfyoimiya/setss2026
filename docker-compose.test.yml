@@ -4,6 +4,8 @@ services:
       POSTGRES_DB: setss_test
       POSTGRES_USER: ${POSTGRES_USER:-setss_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-setss_dev_password}
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
 
   backend:
     build:
@@ -14,6 +16,15 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-setss_user}:${POSTGRES_PASSWORD:-setss_dev_password}@postgres/setss_test
       UV_PROJECT_ENVIRONMENT: /tmp/.venv
     command: >
-      sh -c "uv sync --group dev && /tmp/.venv/bin/alembic upgrade head && /tmp/.venv/bin/pytest tests/ -v"
+      sh -c "
+      uv sync --group dev &&
+      PGPASSWORD=${POSTGRES_PASSWORD:-setss_dev_password} psql -h postgres -U ${POSTGRES_USER:-setss_user} -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'setss_test'\" | grep -q 1 ||
+      PGPASSWORD=${POSTGRES_PASSWORD:-setss_dev_password} psql -h postgres -U ${POSTGRES_USER:-setss_user} -d postgres -c \"CREATE DATABASE setss_test;\" &&
+      /tmp/.venv/bin/alembic upgrade head &&
+      /tmp/.venv/bin/pytest tests/ -v
+      "
     ports:
       - "8080:8080"
+
+volumes:
+  postgres_test_data:

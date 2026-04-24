@@ -49,8 +49,8 @@ def get_current_user(
         user_id: str | None = payload.get("sub")
         if user_id is None:
             raise exc
-    except JWTError:
-        raise exc
+    except JWTError as jwt_err:
+        raise exc from jwt_err
 
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
@@ -67,4 +67,16 @@ def get_current_active_user(current_user: User = Depends(get_current_user)) -> U
 def require_admin(current_user: User = Depends(get_current_active_user)) -> User:
     if not has_role(current_user, "admin"):
         raise HTTPException(status_code=403, detail="Admin privileges required")
+    return current_user
+
+
+def require_organizer(current_user: User = Depends(get_current_active_user)) -> User:
+    if not (has_role(current_user, "admin") or has_role(current_user, "organizer")):
+        raise HTTPException(status_code=403, detail="Organizer privileges required")
+    return current_user
+
+
+def require_reviewer(current_user: User = Depends(get_current_active_user)) -> User:
+    if not (has_role(current_user, "admin") or has_role(current_user, "reviewer")):
+        raise HTTPException(status_code=403, detail="Reviewer privileges required")
     return current_user
