@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.exceptions import (
-    ItemAlreadyExistsException,
-    ItemNotFoundException,
-    ValidationException,
+    ItemAlreadyExistsError,
+    ItemNotFoundError,
+    ValidationError,
 )
 from app.core.response import ok
 from app.models.item import Item
@@ -25,7 +25,7 @@ def create_item(payload: ItemCreate, db: Session = Depends(get_db)):
     # Optional: guard against duplicates if a unique constraint exists
     existing = db.query(Item).filter(Item.name == payload.name).first()
     if existing:
-        raise ItemAlreadyExistsException(
+        raise ItemAlreadyExistsError(
             message=f"Item with name '{payload.name}' already exists"
         ).to_http()
 
@@ -41,7 +41,7 @@ def create_item(payload: ItemCreate, db: Session = Depends(get_db)):
 def get_item(item_id: int, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
-        raise ItemNotFoundException(
+        raise ItemNotFoundError(
             message=f"Item with id={item_id} not found"
         ).to_http()
     return ok(data=ItemResponse.model_validate(item).model_dump(mode="json"))
@@ -51,14 +51,14 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
 def update_item(item_id: int, payload: ItemUpdate, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
-        raise ItemNotFoundException(
+        raise ItemNotFoundError(
             message=f"Item with id={item_id} not found"
         ).to_http()
 
     if payload.name is not None:
         # basic business validation example
         if len(payload.name.strip()) == 0:
-            raise ValidationException(message="Item name cannot be empty").to_http()
+            raise ValidationError(message="Item name cannot be empty").to_http()
         item.name = payload.name
     if payload.description is not None:
         item.description = payload.description
@@ -73,7 +73,7 @@ def update_item(item_id: int, payload: ItemUpdate, db: Session = Depends(get_db)
 def delete_item(item_id: int, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
-        raise ItemNotFoundException(
+        raise ItemNotFoundError(
             message=f"Item with id={item_id} not found"
         ).to_http()
 

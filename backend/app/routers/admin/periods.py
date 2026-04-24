@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import require_organizer
 from app.core.database import get_db
-from app.core.exceptions import PeriodNotFoundException
+from app.core.exceptions import PeriodNotFoundError
 from app.core.response import ApiResponse, created, ok
 from app.crud import submission_period as crud_period
 from app.models.user import User
@@ -60,7 +60,7 @@ def get_period(
 ):
     period = crud_period.get(db, period_id)
     if not period:
-        raise PeriodNotFoundException()
+        raise PeriodNotFoundError()
     return ok(data={
         "id": period.id,
         "name": period.name,
@@ -86,7 +86,7 @@ def update_period(
 ):
     period = crud_period.get(db, period_id)
     if not period:
-        raise PeriodNotFoundException()
+        raise PeriodNotFoundError()
     updated = crud_period.update(db, period, obj_in)
     return ok(data={"id": updated.id, "name": updated.name})
 
@@ -99,6 +99,6 @@ def delete_period(
 ):
     period = crud_period.get(db, period_id)
     if not period:
-        raise PeriodNotFoundException()
+        raise PeriodNotFoundError()
     crud_period.delete(db, period)
     return ok(data={"message": "Period deleted"})

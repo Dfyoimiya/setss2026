@@ -10,17 +10,17 @@ subclasses) so that clients receive a predictable envelope shape:
     }
 """
 
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 from pydantic import BaseModel, Field
 
-from app.core.exceptions import AppException
+from app.core.exceptions import AppError
 from app.core.status_codes import BizCode
 
 T = TypeVar("T")
 
 
-class ApiResponse(BaseModel, Generic[T]):
+class ApiResponse[T](BaseModel):
     """Standard API response envelope.
 
     Attributes:
@@ -118,7 +118,7 @@ def no_content(message: str = "No content") -> ApiResponse:
     return ApiResponse.ok(data=None, message=message)
 
 
-def fail(exc: AppException) -> None:
+def fail(exc: AppError) -> None:
     """Raise the HTTPException derived from an AppException.
 
     Usage::

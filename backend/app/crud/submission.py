@@ -68,8 +68,8 @@ def update(
 def transition_status(db: Session, db_obj: Submission, new_status: str) -> Submission:
     current = db_obj.status
     if new_status not in VALID_TRANSITIONS.get(current, []):
-        from app.core.exceptions import InvalidStateTransitionException
-        raise InvalidStateTransitionException(
+        from app.core.exceptions import InvalidStateTransitionError
+        raise InvalidStateTransitionError(
             f"Cannot transition from '{current}' to '{new_status}'"
         )
     db_obj.status = new_status

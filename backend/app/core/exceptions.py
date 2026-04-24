@@ -10,7 +10,7 @@ from fastapi import HTTPException, status
 from app.core.status_codes import BizCode
 
 
-class AppException(Exception):
+class AppError(Exception):
     """Base application exception.
 
     Args:
@@ -50,7 +50,7 @@ class AppException(Exception):
 # 4xx Client errors
 # ---------------------------------------------------------------------------
 
-class ValidationException(AppException):
+class ValidationError(AppError):
     """Request validation error (business logic level)."""
 
     def __init__(
@@ -67,7 +67,7 @@ class ValidationException(AppException):
         )
 
 
-class NotFoundException(AppException):
+class NotFoundError(AppError):
     """Resource not found."""
 
     def __init__(
@@ -84,7 +84,7 @@ class NotFoundException(AppException):
         )
 
 
-class ConflictException(AppException):
+class ConflictError(AppError):
     """Resource conflict (e.g. duplicate unique key)."""
 
     def __init__(
@@ -101,7 +101,7 @@ class ConflictException(AppException):
         )
 
 
-class UnauthorizedException(AppException):
+class UnauthorizedError(AppError):
     """Authentication required or failed."""
 
     def __init__(
@@ -118,7 +118,7 @@ class UnauthorizedException(AppException):
         )
 
 
-class ForbiddenException(AppException):
+class ForbiddenError(AppError):
     """Permission denied."""
 
     def __init__(
@@ -135,7 +135,7 @@ class ForbiddenException(AppException):
         )
 
 
-class BusinessException(AppException):
+class BusinessError(AppError):
     """Generic business rule violation."""
 
     def __init__(
@@ -156,7 +156,7 @@ class BusinessException(AppException):
 # 5xx Server errors
 # ---------------------------------------------------------------------------
 
-class DatabaseException(AppException):
+class DatabaseError(AppError):
     """Database operation failure."""
 
     def __init__(
@@ -173,7 +173,7 @@ class DatabaseException(AppException):
         )
 
 
-class ExternalServiceException(AppException):
+class ExternalServiceError(AppError):
     """Downstream service call failure."""
 
     def __init__(
@@ -194,7 +194,7 @@ class ExternalServiceException(AppException):
 # Redundant granular exceptions (kept for convenience & precise codes)
 # ---------------------------------------------------------------------------
 
-class ItemNotFoundException(NotFoundException):
+class ItemNotFoundError(NotFoundError):
     def __init__(self, message: str = "Item not found"):
         super().__init__(
             message=message,
@@ -203,7 +203,7 @@ class ItemNotFoundException(NotFoundException):
         )
 
 
-class UserNotFoundException(NotFoundException):
+class UserNotFoundError(NotFoundError):
     def __init__(self, message: str = "User not found"):
         super().__init__(
             message=message,
@@ -212,7 +212,7 @@ class UserNotFoundException(NotFoundException):
         )
 
 
-class FileNotFoundException(NotFoundException):
+class FileNotFoundError(NotFoundError):
     def __init__(self, message: str = "File not found"):
         super().__init__(
             message=message,
@@ -221,7 +221,7 @@ class FileNotFoundException(NotFoundException):
         )
 
 
-class CourseNotFoundException(NotFoundException):
+class CourseNotFoundError(NotFoundError):
     def __init__(self, message: str = "Course not found"):
         super().__init__(
             message=message,
@@ -230,7 +230,7 @@ class CourseNotFoundException(NotFoundException):
         )
 
 
-class UserAlreadyExistsException(ConflictException):
+class UserAlreadyExistsError(ConflictError):
     def __init__(self, message: str = "User already exists"):
         super().__init__(
             message=message,
@@ -239,7 +239,7 @@ class UserAlreadyExistsException(ConflictException):
         )
 
 
-class ItemAlreadyExistsException(ConflictException):
+class ItemAlreadyExistsError(ConflictError):
     def __init__(self, message: str = "Item already exists"):
         super().__init__(
             message=message,
@@ -248,7 +248,7 @@ class ItemAlreadyExistsException(ConflictException):
         )
 
 
-class SubmissionNotFoundException(NotFoundException):
+class SubmissionNotFoundError(NotFoundError):
     def __init__(self, message: str = "Submission not found"):
         super().__init__(
             message=message,
@@ -257,7 +257,7 @@ class SubmissionNotFoundException(NotFoundException):
         )
 
 
-class ReviewNotFoundException(NotFoundException):
+class ReviewNotFoundError(NotFoundError):
     def __init__(self, message: str = "Review not found"):
         super().__init__(
             message=message,
@@ -266,7 +266,7 @@ class ReviewNotFoundException(NotFoundException):
         )
 
 
-class AssignmentNotFoundException(NotFoundException):
+class AssignmentNotFoundError(NotFoundError):
     def __init__(self, message: str = "Review assignment not found"):
         super().__init__(
             message=message,
@@ -275,7 +275,7 @@ class AssignmentNotFoundException(NotFoundException):
         )
 
 
-class PeriodNotFoundException(NotFoundException):
+class PeriodNotFoundError(NotFoundError):
     def __init__(self, message: str = "Submission period not found"):
         super().__init__(
             message=message,
@@ -284,7 +284,7 @@ class PeriodNotFoundException(NotFoundException):
         )
 
 
-class SubmissionAlreadyExistsException(ConflictException):
+class SubmissionAlreadyExistsError(ConflictError):
     def __init__(self, message: str = "Submission already exists"):
         super().__init__(
             message=message,
@@ -293,7 +293,7 @@ class SubmissionAlreadyExistsException(ConflictException):
         )
 
 
-class PeriodClosedException(BusinessException):
+class PeriodClosedError(BusinessError):
     def __init__(self, message: str = "Submission period is closed"):
         super().__init__(
             message=message,
@@ -302,7 +302,7 @@ class PeriodClosedException(BusinessException):
         )
 
 
-class ReviewDeadlineExceededException(BusinessException):
+class ReviewDeadlineExceededError(BusinessError):
     def __init__(self, message: str = "Review deadline has passed"):
         super().__init__(
             message=message,
@@ -311,7 +311,7 @@ class ReviewDeadlineExceededException(BusinessException):
         )
 
 
-class RebuttalClosedException(BusinessException):
+class RebuttalClosedError(BusinessError):
     def __init__(self, message: str = "Rebuttal period is closed"):
         super().__init__(
             message=message,
@@ -320,7 +320,7 @@ class RebuttalClosedException(BusinessException):
         )
 
 
-class InvalidStateTransitionException(BusinessException):
+class InvalidStateTransitionError(BusinessError):
     def __init__(self, message: str = "Invalid state transition"):
         super().__init__(
             message=message,
@@ -329,7 +329,7 @@ class InvalidStateTransitionException(BusinessException):
         )
 
 
-class ReviewerAlreadyAssignedException(BusinessException):
+class ReviewerAlreadyAssignedError(BusinessError):
     def __init__(self, message: str = "Reviewer already assigned to this submission"):
         super().__init__(
             message=message,
