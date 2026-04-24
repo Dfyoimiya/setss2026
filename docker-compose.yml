@@ -2,13 +2,13 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app}
-      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_USER: ${POSTGRES_USER:-setss_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-setss_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-setss_db}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-setss_user}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -35,8 +35,8 @@ services:
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin};
-      /usr/bin/mc mb local/${MINIO_BUCKET:-uploads} || true;
-      /usr/bin/mc anonymous set download local/${MINIO_BUCKET:-uploads} || true;
+      /usr/bin/mc mb local/${MINIO_BUCKET:-setss-papers} || true;
+      /usr/bin/mc anonymous set download local/${MINIO_BUCKET:-setss-papers} || true;
       exit 0;
       "
 
@@ -45,24 +45,19 @@ services:
       context: ./backend
       target: prod
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app}@postgres/${POSTGRES_DB:-app}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-setss_user}:${POSTGRES_PASSWORD:-setss_dev_password}@postgres/${POSTGRES_DB:-setss_db}
       SECRET_KEY: ${SECRET_KEY:-dev-secret-key}
       MINIO_ENDPOINT: minio:9000
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
-      MINIO_BUCKET: ${MINIO_BUCKET:-uploads}
+      MINIO_BUCKET: ${MINIO_BUCKET:-setss-papers}
     depends_on:
       postgres:
         condition: service_healthy
       minio:
         condition: service_healthy
-
-  frontend:
-    build: ./frontend
     ports:
-      - "80:80"
-    depends_on:
-      - backend
+      - "8080:8080"
 
 volumes:
   postgres_data:

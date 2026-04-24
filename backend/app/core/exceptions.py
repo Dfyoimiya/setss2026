@@ -6,7 +6,7 @@ into the standard JSON response format automatically.
 """
 
 from fastapi import HTTPException, status
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 
 
 class AppException(Exception):

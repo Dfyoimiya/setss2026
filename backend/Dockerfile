@@ -1,23 +1,23 @@
-# ---------- 阶段1：基础 + 依赖 ----------
+# ---------- Stage 1: base ----------
 FROM python:3.12-slim-bookworm AS base
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+RUN pip install uv --index-url https://pypi.tuna.tsinghua.edu.cn/simple
 WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 ENV PATH="/app/.venv/bin:$PATH"
 
-# ---------- 阶段2：开发/测试（含 dev 依赖） ----------
+# ---------- Stage 2: dev (with dev deps) ----------
 FROM base AS dev
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock* ./
 RUN uv sync --frozen --group dev
 COPY . .
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
 
-# ---------- 阶段3：生产 ----------
+# ---------- Stage 3: prod ----------
 FROM base AS prod
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock* ./
 RUN uv sync --frozen --no-group dev
 COPY . .
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

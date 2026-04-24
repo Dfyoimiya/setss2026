@@ -1,27 +1,49 @@
 [project]
 name = "setss2026-backend"
 version = "0.1.0"
-description = "University course project API"
-requires-python = ">=3.11"
+description = "SETSS 2026 international academic conference website backend"
+requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.110.0",
     "uvicorn[standard]>=0.29.0",
     "sqlalchemy>=2.0.0",
-    "psycopg2-binary>=2.9.0",
     "alembic>=1.13.0",
+    "psycopg2-binary>=2.9.0",
+    "pydantic[email]>=2.2.0",
     "pydantic-settings>=2.2.0",
     "python-multipart>=0.0.9",
+    "passlib[bcrypt]>=1.7.4",
+    "bcrypt==3.2.2",
+    "python-jose[cryptography]>=3.3.0",
     "minio>=7.2.0",
+    "aiofiles>=24.1.0",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
     "httpx>=0.27.0",
-    "factory-boy>=3.3.0",
     "ruff>=0.4.0",
 ]
 
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = [".", ".."]
+pythonpath = ["."]
+addopts = "-v --tb=short"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["*/tests/*", "*/alembic/*"]
