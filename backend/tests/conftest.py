@@ -55,3 +55,15 @@ def client():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     yield TestClient(app)
+
+
+@pytest.fixture(scope="function")
+def db():
+    """Return a SQLAlchemy session bound to the test database."""
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    session = TestingSessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
