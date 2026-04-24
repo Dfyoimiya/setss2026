@@ -23,3 +23,9 @@ test-integration:
 
 build:
 	docker compose -f docker-compose.yml build
+
+format:
+	cd backend && uv sync --group dev && uvx ruff check . --fix && uvx ruff format .
+
+lint:
+	cd backend && uv sync --group dev && uvx ruff check .

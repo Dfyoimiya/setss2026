@@ -1,6 +1,5 @@
 """Unit tests for auth utilities (password hashing, JWT, role checks)."""
 
-import pytest
 from jose import jwt
 
 from app.auth import (

@@ -4,8 +4,8 @@ All assertions verify the ``ApiResponse`` envelope shape:
 ``{"code": <int>, "message": <str>, "data": <Any>}``.
 """
 
-import pytest
 from fastapi import status
+
 from app.core.status_codes import BizCode
 
 

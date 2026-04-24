@@ -1,6 +1,5 @@
 """Integration tests for user registration, login, and profile endpoints."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 

@@ -6,13 +6,13 @@ from sqlalchemy.orm import Session
 from app.auth import get_current_active_user
 from app.core.database import get_db
 from app.core.exceptions import (
-    FileNotFoundException,
-    NotFoundException,
-    PeriodClosedException,
-    RebuttalClosedException,
-    ReviewNotFoundException,
-    SubmissionNotFoundException,
-    UnauthorizedException,
+    FileNotFoundError,
+    NotFoundError,
+    PeriodClosedError,
+    RebuttalClosedError,
+    ReviewNotFoundError,
+    SubmissionNotFoundError,
+    UnauthorizedError,
 )
 from app.core.response import ApiResponse, created, ok
 from app.core.storage import get_storage_service
@@ -41,7 +41,7 @@ def _check_period_open_for_submission(period) -> None:
     if start.tzinfo is None:
         now = now.replace(tzinfo=None)
     if now < start or now > end:
-        raise PeriodClosedException("Submission period is not open")
+        raise PeriodClosedError("Submission period is not open")
 
 
 def _check_period_open_for_rebuttal(period) -> None:
@@ -50,12 +50,12 @@ def _check_period_open_for_rebuttal(period) -> None:
     if deadline.tzinfo is None:
         now = now.replace(tzinfo=None)
     if now > deadline:
-        raise RebuttalClosedException("Rebuttal period has closed")
+        raise RebuttalClosedError("Rebuttal period has closed")
 
 
 def _check_owner(submission: Submission, current_user: User) -> None:
     if submission.user_id != current_user.id:
-        raise UnauthorizedException("You can only access your own submissions")
+        raise UnauthorizedError("You can only access your own submissions")
 
 
 def _build_submission_response(db: Session, submission: Submission) -> SubmissionResponse:
@@ -96,7 +96,7 @@ def create_submission(
 ):
     period = crud_period.get(db, obj_in.period_id)
     if not period:
-        raise NotFoundException("Submission period not found")
+        raise NotFoundError("Submission period not found")
     _check_period_open_for_submission(period)
 
     submission = crud_submission.create(db, obj_in, current_user.id)
@@ -132,7 +132,7 @@ def get_submission(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     _check_owner(submission, current_user)
 
     response = _build_submission_response(db, submission)
@@ -177,12 +177,12 @@ def update_submission(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     _check_owner(submission, current_user)
 
     # Only drafts or revision states can be edited
     if submission.status not in ("draft", "minor_revision", "major_revision"):
-        raise PeriodClosedException(
+        raise PeriodClosedError(
             "Submissions can only be edited when in draft or revision state"
         )
 
@@ -205,7 +205,7 @@ def withdraw_submission(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     _check_owner(submission, current_user)
 
     if submission.status == "withdrawn":
@@ -224,11 +224,11 @@ def upload_file(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     _check_owner(submission, current_user)
 
     if submission.status not in ("draft", "minor_revision", "major_revision"):
-        raise PeriodClosedException("Cannot upload files for this submission status")
+        raise PeriodClosedError("Cannot upload files for this submission status")
 
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
@@ -271,12 +271,12 @@ def download_file(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     _check_owner(submission, current_user)
 
     db_file = crud_file.get(db, file_id)
     if not db_file or db_file.submission_id != submission_id:
-        raise FileNotFoundException()
+        raise FileNotFoundError()
 
     storage = get_storage_service()
     data = storage.download_file(db_file.minio_key)
@@ -297,7 +297,7 @@ def submit_submission(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     _check_owner(submission, current_user)
 
     period = crud_period.get(db, submission.period_id)
@@ -321,7 +321,7 @@ def submit_revision(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     _check_owner(submission, current_user)
 
     if submission.status not in ("minor_revision", "major_revision"):
@@ -346,18 +346,18 @@ def create_rebuttal(
 ):
     review = crud_review.get(db, review_id)
     if not review:
-        raise ReviewNotFoundException()
+        raise ReviewNotFoundError()
 
     # Verify the review belongs to the current user's submission
     from app.models.review_assignment import ReviewAssignment
 
     assignment = db.query(ReviewAssignment).filter(ReviewAssignment.id == review.assignment_id).first()
     if not assignment:
-        raise NotFoundException("Assignment not found")
+        raise NotFoundError("Assignment not found")
 
     submission = crud_submission.get(db, assignment.submission_id)
     if not submission or submission.user_id != current_user.id:
-        raise UnauthorizedException("You can only rebuttal reviews for your own submissions")
+        raise UnauthorizedError("You can only rebuttal reviews for your own submissions")
 
     # Check rebuttal deadline
     period = crud_period.get(db, submission.period_id)

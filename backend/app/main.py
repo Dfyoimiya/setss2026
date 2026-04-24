@@ -6,7 +6,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.items import router as items_router
 from app.core.config import settings
-from app.core.exceptions import AppException
+from app.core.exceptions import AppError
 from app.core.response import ApiResponse, ok
 from app.core.status_codes import BizCode
 from app.routers.admin.periods import router as admin_periods_router
@@ -32,8 +32,8 @@ app.add_middleware(
 
 # ===== Global exception handlers =====
 
-@app.exception_handler(AppException)
-async def app_exception_handler(request: Request, exc: AppException):
+@app.exception_handler(AppError)
+async def app_exception_handler(request: Request, exc: AppError):
     return JSONResponse(
         status_code=exc.status_code,
         content=ApiResponse.error(

@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from app.auth import require_organizer
 from app.core.database import get_db
 from app.core.exceptions import (
-    FileNotFoundException,
-    SubmissionNotFoundException,
+    FileNotFoundError,
+    SubmissionNotFoundError,
 )
 from app.core.response import ApiResponse, ok
 from app.core.storage import get_storage_service
@@ -104,7 +104,7 @@ def get_submission_detail(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
     return ok(data=_build_full_submission(db, submission))
 
 
@@ -117,7 +117,7 @@ def admin_download_file(
 ):
     db_file = crud_file.get(db, file_id)
     if not db_file or db_file.submission_id != submission_id:
-        raise FileNotFoundException()
+        raise FileNotFoundError()
 
     storage = get_storage_service()
     data = storage.download_file(db_file.minio_key)
@@ -139,7 +139,7 @@ def make_decision(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
 
     # Transition to the decision state
     valid_decisions = ["accepted", "rejected", "minor_revision", "major_revision"]

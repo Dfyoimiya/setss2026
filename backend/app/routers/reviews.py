@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session
 from app.auth import require_reviewer
 from app.core.database import get_db
 from app.core.exceptions import (
-    AssignmentNotFoundException,
-    FileNotFoundException,
-    NotFoundException,
-    ReviewDeadlineExceededException,
-    ReviewNotFoundException,
-    UnauthorizedException,
+    AssignmentNotFoundError,
+    FileNotFoundError,
+    NotFoundError,
+    ReviewDeadlineExceededError,
+    ReviewNotFoundError,
+    UnauthorizedError,
 )
 from app.core.response import ApiResponse, created, ok
 from app.core.storage import get_storage_service
@@ -31,7 +31,7 @@ router = APIRouter(prefix="/api/v1/review", tags=["Reviews"])
 
 def _check_assignment_owner(assignment: ReviewAssignment, current_user: User) -> None:
     if assignment.reviewer_id != current_user.id:
-        raise UnauthorizedException("This assignment does not belong to you")
+        raise UnauthorizedError("This assignment does not belong to you")
 
 
 def _check_review_deadline(assignment: ReviewAssignment) -> None:
@@ -40,7 +40,7 @@ def _check_review_deadline(assignment: ReviewAssignment) -> None:
     if deadline.tzinfo is None:
         now = now.replace(tzinfo=None)
     if now > deadline:
-        raise ReviewDeadlineExceededException()
+        raise ReviewDeadlineExceededError()
 
 
 @router.get("/assignments", response_model=ApiResponse)
@@ -73,12 +73,12 @@ def get_assignment(
 ):
     assignment = crud_assignment.get(db, assignment_id)
     if not assignment:
-        raise AssignmentNotFoundException()
+        raise AssignmentNotFoundError()
     _check_assignment_owner(assignment, current_user)
 
     submission = crud_submission.get(db, assignment.submission_id)
     if not submission:
-        raise NotFoundException("Submission not found")
+        raise NotFoundError("Submission not found")
 
     files = crud_file.get_by_submission(db, str(submission.id))
     current_file = next((f for f in files if f.is_current), None)
@@ -154,7 +154,7 @@ def accept_assignment(
 ):
     assignment = crud_assignment.get(db, assignment_id)
     if not assignment:
-        raise AssignmentNotFoundException()
+        raise AssignmentNotFoundError()
     _check_assignment_owner(assignment, current_user)
 
     if assignment.status != "pending":
@@ -172,7 +172,7 @@ def decline_assignment(
 ):
     assignment = crud_assignment.get(db, assignment_id)
     if not assignment:
-        raise AssignmentNotFoundException()
+        raise AssignmentNotFoundError()
     _check_assignment_owner(assignment, current_user)
 
     if assignment.status != "pending":
@@ -191,7 +191,7 @@ def submit_review(
 ):
     assignment = crud_assignment.get(db, assignment_id)
     if not assignment:
-        raise AssignmentNotFoundException()
+        raise AssignmentNotFoundError()
     _check_assignment_owner(assignment, current_user)
 
     if assignment.status not in ("accepted", "in_review"):
@@ -240,12 +240,12 @@ def update_review(
 ):
     assignment = crud_assignment.get(db, assignment_id)
     if not assignment:
-        raise AssignmentNotFoundException()
+        raise AssignmentNotFoundError()
     _check_assignment_owner(assignment, current_user)
 
     review = crud_review.get_by_assignment(db, assignment.id)
     if not review:
-        raise ReviewNotFoundException()
+        raise ReviewNotFoundError()
 
     _check_review_deadline(assignment)
 
@@ -273,20 +273,20 @@ def download_anonymous_file(
 ):
     assignment = crud_assignment.get(db, assignment_id)
     if not assignment:
-        raise AssignmentNotFoundException()
+        raise AssignmentNotFoundError()
     _check_assignment_owner(assignment, current_user)
 
     if assignment.status == "declined":
-        raise UnauthorizedException("You have declined this assignment")
+        raise UnauthorizedError("You have declined this assignment")
 
     submission = crud_submission.get(db, assignment.submission_id)
     if not submission:
-        raise NotFoundException("Submission not found")
+        raise NotFoundError("Submission not found")
 
     files = crud_file.get_by_submission(db, str(submission.id))
     current_file = next((f for f in files if f.is_current), None)
     if not current_file:
-        raise FileNotFoundException("No file available for this submission")
+        raise FileNotFoundError("No file available for this submission")
 
     storage = get_storage_service()
     data = storage.download_file(current_file.minio_key)

@@ -47,3 +47,10 @@ markers = [
 [tool.coverage.run]
 source = ["app"]
 omit = ["*/tests/*", "*/alembic/*"]
+
+# Pylance/Pyright configuration for SQLAlchemy 1.x style code
+# SQLAlchemy 1.x declarative models cause false positives in static type checkers
+[tool.pyright]
+reportGeneralTypeIssues = "warning"
+reportArgumentType = "warning"
+reportAttributeAccessIssue = "warning"

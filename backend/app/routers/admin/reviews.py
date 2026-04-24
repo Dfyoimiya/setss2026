@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session
 from app.auth import require_organizer
 from app.core.database import get_db
 from app.core.exceptions import (
-    NotFoundException,
-    ReviewerAlreadyAssignedException,
-    ReviewNotFoundException,
-    SubmissionNotFoundException,
+    NotFoundError,
+    ReviewerAlreadyAssignedError,
+    ReviewNotFoundError,
+    SubmissionNotFoundError,
 )
 from app.core.response import ApiResponse, created, ok
 from app.crud import review as crud_review
@@ -74,11 +74,11 @@ def manual_assign(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
 
     existing = crud_assignment.get_by_submission_and_reviewer(db, submission_id, reviewer_id)
     if existing:
-        raise ReviewerAlreadyAssignedException()
+        raise ReviewerAlreadyAssignedError()
 
     assignment = crud_assignment.create(
         db,
@@ -105,11 +105,11 @@ def auto_assign(
 ):
     submission = crud_submission.get(db, submission_id)
     if not submission:
-        raise SubmissionNotFoundException()
+        raise SubmissionNotFoundError()
 
     period = crud_period.get(db, submission.period_id)
     if not period:
-        raise NotFoundException("Submission period not found")
+        raise NotFoundError("Submission period not found")
 
     assignments = crud_assignment.auto_assign(
         db,
@@ -146,7 +146,7 @@ def set_review_visibility(
 ):
     review = crud_review.get(db, review_id)
     if not review:
-        raise ReviewNotFoundException()
+        raise ReviewNotFoundError()
 
     updated = crud_review.set_visibility(db, review, obj_in.is_visible_to_author)
     return ok(data={"id": updated.id, "is_visible_to_author": updated.is_visible_to_author})
