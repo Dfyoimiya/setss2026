@@ -6,6 +6,22 @@ from app.core.database import Base
 
 
 class Submission(Base):
+    """Model representing a submission for a journal.
+
+    Attributes:
+        id: Unique identifier for the submission.
+        user_id: ID of the user who made the submission.
+        period_id: ID of the submission period this submission belongs to.
+        title: Title of the submission.
+        abstract: Abstract of the submission.
+        keywords: Comma-separated keywords for the submission.
+        authors: List of authors with their details (name, affiliation, email).
+        corresponding_author: Details of the corresponding author (name, affiliation, email).
+        status: Current status of the submission (e.g., draft, submitted, under_review, accepted, rejected).
+        created_at: Timestamp when the submission was created.
+        updated_at: Timestamp when the submission was last updated.
+    """
+
     __tablename__ = "submissions"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)

@@ -1,7 +1,7 @@
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 
 from app.core.exceptions import BusinessException
 from app.core.response import ApiResponse
