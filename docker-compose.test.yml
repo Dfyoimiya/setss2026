@@ -2,6 +2,8 @@ services:
   postgres:
     environment:
       POSTGRES_DB: setss_test
+      POSTGRES_USER: ${POSTGRES_USER:-setss_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-setss_dev_password}
 
   backend:
     build:
@@ -14,4 +16,4 @@ services:
     command: >
       sh -c "uv sync --group dev && /tmp/.venv/bin/alembic upgrade head && /tmp/.venv/bin/pytest tests/ -v"
     ports:
-      - "8000:8000"
+      - "8080:8080"

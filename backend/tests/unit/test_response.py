@@ -4,7 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from app.core.response import ApiResponse, PagedApiResponse, ok, created, no_content
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 
 
 def test_api_response_ok_defaults():
