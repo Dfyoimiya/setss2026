@@ -7,7 +7,7 @@ end-to-end, including the ``code``, ``message``, and ``data`` fields.
 from fastapi.testclient import TestClient
 from app.core.database import Base, engine, SessionLocal
 from app.main import app
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 
 client = TestClient(app)
 

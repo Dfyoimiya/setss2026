@@ -13,7 +13,7 @@ subclasses) so that clients receive a predictable envelope shape:
 from typing import Any, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 from app.core.exceptions import AppException
 
 T = TypeVar("T")

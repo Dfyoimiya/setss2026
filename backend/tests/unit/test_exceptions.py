@@ -16,7 +16,7 @@ from app.core.exceptions import (
     ItemNotFoundException,
     UserAlreadyExistsException,
 )
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 
 
 def test_app_exception_attributes():

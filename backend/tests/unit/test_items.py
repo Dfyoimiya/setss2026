@@ -6,7 +6,7 @@ All assertions verify the ``ApiResponse`` envelope shape:
 
 import pytest
 from fastapi import status
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 
 
 def _unwrap(response):

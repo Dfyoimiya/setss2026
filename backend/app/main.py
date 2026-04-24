@@ -5,10 +5,11 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.items import router as items_router
+from app.routers.users import router as users_router
 from app.core.config import settings
 from app.core.response import ApiResponse, ok
 from app.core.exceptions import AppException
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
 
 app = FastAPI(
     title="SETSS2026 API",
@@ -82,6 +83,7 @@ async def generic_exception_handler(request: Request, exc: Exception):
 # ===== Routes =====
 
 app.include_router(items_router)
+app.include_router(users_router)
 
 
 @app.get("/")
