@@ -61,12 +61,17 @@ class BizCode(IntEnum):
     PROJECT_NOT_FOUND = 300105
     TEAM_NOT_FOUND = 300106
     COMMENT_NOT_FOUND = 300107
+    SUBMISSION_NOT_FOUND = 300108
+    REVIEW_NOT_FOUND = 300109
+    ASSIGNMENT_NOT_FOUND = 300110
+    PERIOD_NOT_FOUND = 300111
 
     # Redundant granular ALREADY_EXISTS codes
     USER_ALREADY_EXISTS = 300301
     ITEM_ALREADY_EXISTS = 300302
     FILE_ALREADY_EXISTS = 300303
     COURSE_ALREADY_EXISTS = 300304
+    SUBMISSION_ALREADY_EXISTS = 300305
 
     # ------------------------------------------------------------------
     # Business logic errors  (4xxx)
@@ -78,6 +83,12 @@ class BizCode(IntEnum):
     STATE_INVALID = 4005        # e.g. illegal state transition
     PRECONDITION_FAILED = 4006
     DEPENDENCY_NOT_MET = 4007
+    PERIOD_CLOSED = 400101
+    REVIEW_DEADLINE_EXCEEDED = 400102
+    REBUTTAL_CLOSED = 400103
+    INVALID_STATE_TRANSITION = 400104
+    REVIEWER_ALREADY_ASSIGNED = 400105
+    REVIEWER_CAPACITY_FULL = 400106
 
     # ------------------------------------------------------------------
     # Database / Internal errors  (5xxx)

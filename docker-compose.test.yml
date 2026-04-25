@@ -4,6 +4,17 @@ services:
       POSTGRES_DB: setss_test
       POSTGRES_USER: ${POSTGRES_USER:-setss_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-setss_dev_password}
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-setss_user}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio-init:
+    entrypoint: ["sh", "-c", "exit 0"]
+    depends_on: []
 
   backend:
     build:
@@ -13,7 +24,19 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-setss_user}:${POSTGRES_PASSWORD:-setss_dev_password}@postgres/setss_test
       UV_PROJECT_ENVIRONMENT: /tmp/.venv
+    depends_on:
+      postgres:
+        condition: service_healthy
     command: >
-      sh -c "uv sync --group dev && /tmp/.venv/bin/alembic upgrade head && /tmp/.venv/bin/pytest tests/ -v"
+      sh -c "
+      uv sync --group dev &&
+      /tmp/.venv/bin/alembic upgrade head &&
+      /tmp/.venv/bin/pytest tests/ -v
+      "
     ports:
       - "8080:8080"
+
+volumes:
+  postgres_test_data:
+
+

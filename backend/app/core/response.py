@@ -10,16 +10,17 @@ subclasses) so that clients receive a predictable envelope shape:
     }
 """
 
-from typing import Any, Generic, Optional, TypeVar
+from typing import Any, TypeVar
 
 from pydantic import BaseModel, Field
+
+from app.core.exceptions import AppError
 from app.core.status_codes import BizCode
-from app.core.exceptions import AppException
 
 T = TypeVar("T")
 
 
-class ApiResponse(BaseModel, Generic[T]):
+class ApiResponse[T](BaseModel):
     """Standard API response envelope.
 
     Attributes:
@@ -30,7 +31,7 @@ class ApiResponse(BaseModel, Generic[T]):
 
     code: int = Field(default=BizCode.SUCCESS, description="Business status code")
     message: str = Field(default="success", description="Status message")
-    data: Optional[Any] = Field(default=None, description="Response payload")
+    data: Any | None = Field(default=None, description="Response payload")
 
     @classmethod
     def ok(cls, data: Any = None, message: str = "success") -> "ApiResponse":
@@ -66,7 +67,7 @@ class PagedApiResponse(ApiResponse):
         }
     """
 
-    pagination: Optional[dict] = Field(
+    pagination: dict | None = Field(
         default=None,
         description="Pagination metadata",
     )
@@ -117,7 +118,7 @@ def no_content(message: str = "No content") -> ApiResponse:
     return ApiResponse.ok(data=None, message=message)
 
 
-def fail(exc: AppException) -> None:
+def fail(exc: AppError) -> None:
     """Raise the HTTPException derived from an AppException.
 
     Usage::

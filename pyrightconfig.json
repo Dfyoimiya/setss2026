@@ -1,0 +1,9 @@
+{
+    "include": ["backend/app"],
+    "exclude": ["backend/alembic", "backend/tests"],
+    "pythonVersion": "3.12",
+    "pythonPlatform": "Linux",
+    "reportGeneralTypeIssues": "warning",
+    "reportArgumentType": "warning",
+    "reportAttributeAccessIssue": "warning"
+}

@@ -6,6 +6,23 @@ from app.core.database import Base
 
 
 class User(Base):
+    """"Model representing a user in the system.
+
+    Attributes:
+        id: Unique identifier for the user.
+        email: User's email address (must be unique).
+        hashed_password: Hashed password for authentication.
+        full_name: User's full name.
+        institution: User's affiliated institution.
+        role: User's role in the system (e.g., admin, organizer, speaker, participant).
+        is_active: Whether the user's account is active.
+        email_verified: Whether the user's email has been verified.
+        email_verify_token: Token used for email verification.
+        password_reset_token: Token used for password reset.
+        password_reset_expires: Expiration time for the password reset token.
+        created_at: Timestamp when the user account was created.
+        updated_at: Timestamp when the user account was last updated.
+    """
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)

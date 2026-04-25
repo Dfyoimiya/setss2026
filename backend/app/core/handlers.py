@@ -1,18 +1,19 @@
 from fastapi import Request, status
-from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
+from app.core.exceptions import BusinessError
 from app.core.response import ApiResponse
-from app.core.exceptions import BusinessException
-from shared.status_codes import BizCode
+from app.core.status_codes import BizCode
+
 
 def register_handlers(app):
-    @app.exception_handler(BusinessException)
-    async def biz_exc(request: Request, exc: BusinessException):
+    @app.exception_handler(BusinessError)
+    async def biz_exc(request: Request, exc: BusinessError):
         return JSONResponse(
-            status_code=exc.http_status,
+            status_code=exc.status_code,
             content=ApiResponse.error(
-                biz_code=exc.biz_code, 
+                biz_code=exc.biz_code,
                 message=exc.message
             ).model_dump()
         )

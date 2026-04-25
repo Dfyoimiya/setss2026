@@ -1,15 +1,21 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.items import router as items_router
-from app.routers.users import router as users_router
 from app.core.config import settings
+from app.core.exceptions import AppError
 from app.core.response import ApiResponse, ok
-from app.core.exceptions import AppException
 from app.core.status_codes import BizCode
+from app.routers.admin.periods import router as admin_periods_router
+from app.routers.admin.reviews import router as admin_reviews_router
+from app.routers.admin.submissions import router as admin_submissions_router
+from app.routers.admin.users import router as admin_users_router
+from app.routers.reviews import router as reviews_router
+from app.routers.submissions import router as submissions_router
+from app.routers.users import router as users_router
 
 app = FastAPI(
     title="SETSS2026 API",
@@ -27,8 +33,8 @@ app.add_middleware(
 
 # ===== Global exception handlers =====
 
-@app.exception_handler(AppException)
-async def app_exception_handler(request: Request, exc: AppException):
+@app.exception_handler(AppError)
+async def app_exception_handler(request: Request, exc: AppError):
     return JSONResponse(
         status_code=exc.status_code,
         content=ApiResponse.error(
@@ -84,6 +90,12 @@ async def generic_exception_handler(request: Request, exc: Exception):
 
 app.include_router(items_router)
 app.include_router(users_router)
+app.include_router(submissions_router)
+app.include_router(reviews_router)
+app.include_router(admin_periods_router)
+app.include_router(admin_submissions_router)
+app.include_router(admin_reviews_router)
+app.include_router(admin_users_router)
 
 
 @app.get("/")

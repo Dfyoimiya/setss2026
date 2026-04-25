@@ -1,6 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, field_validator
 
+from pydantic import BaseModel, EmailStr, field_validator
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -75,6 +75,16 @@ class ResetPasswordRequest(BaseModel):
         if len(v) < 8:
             raise ValueError("Password must be at least 8 characters")
         return v
+
+
+# ── Admin ─────────────────────────────────────────────────────────────────────
+
+class RoleUpdate(BaseModel):
+    role: str
+
+
+class StatusUpdate(BaseModel):
+    is_active: bool
 
 
 # ── Generic ───────────────────────────────────────────────────────────────────
