@@ -1,68 +1,38 @@
-"""Integration tests that exercise the full API flow.
+"""Integration tests that exercise the full API flow."""
 
-These assertions verify that the unified response envelope is preserved
-end-to-end, including the ``code``, ``message``, and ``data`` fields.
-"""
-
-from fastapi.testclient import TestClient
-
-from app.core.database import Base, engine
 from app.core.status_codes import BizCode
-from app.main import app
-
-client = TestClient(app)
 
 
-def setup_module(module):
-    Base.metadata.create_all(bind=engine)
-
-
-def teardown_module(module):
-    Base.metadata.drop_all(bind=engine)
-
-
-def test_full_item_lifecycle():
-    # Create
+def test_full_item_lifecycle(client):
     r = client.post("/items/", json={"name": "Integration Item", "description": "flow test"})
     assert r.status_code == 201
     body = r.json()
     assert body["code"] == BizCode.SUCCESS
-    item = body["data"]
-    item_id = item["id"]
+    item_id = body["data"]["id"]
 
-    # List
     r = client.get("/items/")
     assert r.status_code == 200
-    body = r.json()
-    assert body["code"] == BizCode.SUCCESS
-    assert len(body["data"]) == 1
+    assert r.json()["code"] == BizCode.SUCCESS
+    assert len(r.json()["data"]) == 1
 
-    # Read
     r = client.get(f"/items/{item_id}")
     assert r.status_code == 200
-    body = r.json()
-    assert body["code"] == BizCode.SUCCESS
-    assert body["data"]["name"] == "Integration Item"
+    assert r.json()["data"]["name"] == "Integration Item"
 
-    # Update
     r = client.put(f"/items/{item_id}", json={"name": "Updated Item"})
     assert r.status_code == 200
-    body = r.json()
-    assert body["code"] == BizCode.SUCCESS
-    assert body["data"]["name"] == "Updated Item"
+    assert r.json()["data"]["name"] == "Updated Item"
 
-    # Delete
     r = client.delete(f"/items/{item_id}")
     assert r.status_code == 200
     assert r.json()["code"] == BizCode.SUCCESS
 
-    # Verify deletion
     r = client.get(f"/items/{item_id}")
     assert r.status_code == 404
     assert r.json()["code"] == BizCode.ITEM_NOT_FOUND
 
 
-def test_health_endpoint():
+def test_health_endpoint(client):
     r = client.get("/health")
     assert r.status_code == 200
     body = r.json()
@@ -70,7 +40,7 @@ def test_health_endpoint():
     assert body["data"]["status"] == "ok"
 
 
-def test_root_endpoint():
+def test_root_endpoint(client):
     r = client.get("/")
     assert r.status_code == 200
     body = r.json()

@@ -77,6 +77,16 @@ class ResetPasswordRequest(BaseModel):
         return v
 
 
+# ── Admin ─────────────────────────────────────────────────────────────────────
+
+class RoleUpdate(BaseModel):
+    role: str
+
+
+class StatusUpdate(BaseModel):
+    is_active: bool
+
+
 # ── Generic ───────────────────────────────────────────────────────────────────
 
 class MessageResponse(BaseModel):

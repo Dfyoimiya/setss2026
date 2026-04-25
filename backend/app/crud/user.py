@@ -51,3 +51,23 @@ def change_password(db: Session, user: User, old_password: str, new_password: st
     user.hashed_password = get_password_hash(new_password)
     db.commit()
     return True
+
+
+def get_users_paginated(db: Session, skip: int = 0, limit: int = 20) -> tuple[list[User], int]:
+    total = db.query(User).count()
+    users = db.query(User).offset(skip).limit(limit).all()
+    return users, total
+
+
+def update_role(db: Session, user: User, new_role: str) -> User:
+    user.role = new_role
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def update_status(db: Session, user: User, is_active: bool) -> User:
+    user.is_active = is_active
+    db.commit()
+    db.refresh(user)
+    return user

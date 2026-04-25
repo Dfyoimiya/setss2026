@@ -6,6 +6,15 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-setss_dev_password}
     volumes:
       - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-setss_user}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio-init:
+    entrypoint: ["sh", "-c", "exit 0"]
+    depends_on: []
 
   backend:
     build:
@@ -15,11 +24,12 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-setss_user}:${POSTGRES_PASSWORD:-setss_dev_password}@postgres/setss_test
       UV_PROJECT_ENVIRONMENT: /tmp/.venv
+    depends_on:
+      postgres:
+        condition: service_healthy
     command: >
       sh -c "
       uv sync --group dev &&
-      PGPASSWORD=${POSTGRES_PASSWORD:-setss_dev_password} psql -h postgres -U ${POSTGRES_USER:-setss_user} -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'setss_test'\" | grep -q 1 ||
-      PGPASSWORD=${POSTGRES_PASSWORD:-setss_dev_password} psql -h postgres -U ${POSTGRES_USER:-setss_user} -d postgres -c \"CREATE DATABASE setss_test;\" &&
       /tmp/.venv/bin/alembic upgrade head &&
       /tmp/.venv/bin/pytest tests/ -v
       "
@@ -28,3 +38,5 @@ services:
 
 volumes:
   postgres_test_data:
+
+
