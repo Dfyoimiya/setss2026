@@ -12,6 +12,7 @@ from app.core.status_codes import BizCode
 from app.routers.admin.periods import router as admin_periods_router
 from app.routers.admin.reviews import router as admin_reviews_router
 from app.routers.admin.submissions import router as admin_submissions_router
+from app.routers.admin.users import router as admin_users_router
 from app.routers.reviews import router as reviews_router
 from app.routers.submissions import router as submissions_router
 from app.routers.users import router as users_router
@@ -94,6 +95,7 @@ app.include_router(reviews_router)
 app.include_router(admin_periods_router)
 app.include_router(admin_submissions_router)
 app.include_router(admin_reviews_router)
+app.include_router(admin_users_router)
 
 
 @app.get("/")
