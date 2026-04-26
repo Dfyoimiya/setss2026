@@ -1,7 +1,7 @@
 .PHONY: dev dev-down migrate migrate-new test-unit test-integration build
 
 dev:
-	cp -n .env.example .env 2>/dev/null || true
+	@test -f .env || cp .env.example .env
 	docker compose up -d --build
 
 dev-down:

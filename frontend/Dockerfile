@@ -1,4 +1,9 @@
-# 构建阶段
+# Dev stage
+FROM node:20-alpine AS dev
+WORKDIR /app
+CMD ["npm", "run", "dev"]
+
+# Build stage
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
@@ -6,7 +11,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# 生产阶段（Nginx）
+# Production stage (Nginx)
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
