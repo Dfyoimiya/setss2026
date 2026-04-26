@@ -12,10 +12,7 @@ def register_handlers(app):
     async def biz_exc(request: Request, exc: BusinessError):
         return JSONResponse(
             status_code=exc.status_code,
-            content=ApiResponse.error(
-                biz_code=exc.biz_code,
-                message=exc.message
-            ).model_dump()
+            content=ApiResponse.error(biz_code=exc.biz_code, message=exc.message).model_dump(),
         )
 
     @app.exception_handler(RequestValidationError)
@@ -25,8 +22,11 @@ def register_handlers(app):
             content=ApiResponse.error(
                 biz_code=BizCode.PARAM_ERROR,
                 message="参数校验失败",
-                data=[{"field": ".".join(str(x) for x in e["loc"]), "msg": e["msg"]} for e in exc.errors()]
-            ).model_dump()
+                data=[
+                    {"field": ".".join(str(x) for x in e["loc"]), "msg": e["msg"]}
+                    for e in exc.errors()
+                ],
+            ).model_dump(),
         )
 
     @app.exception_handler(Exception)
@@ -35,6 +35,8 @@ def register_handlers(app):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content=ApiResponse.error(
                 biz_code=BizCode.INTERNAL_ERROR,
-                message=str(exc) if getattr(request.app.state, "debug", False) else "服务器内部错误"
-            ).model_dump()
+                message=str(exc)
+                if getattr(request.app.state, "debug", False)
+                else "服务器内部错误",
+            ).model_dump(),
         )

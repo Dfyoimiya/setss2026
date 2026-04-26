@@ -34,7 +34,7 @@ def _register_user(client: TestClient, email: str, password: str = "password123"
         "/api/v1/users/login",
         json={"email": email, "password": password},
     )
-    return resp.json()["access_token"]
+    return resp.json()["data"]["access_token"]
 
 
 def _get_auth_headers(token: str) -> dict:
@@ -91,9 +91,7 @@ class TestSubmissionWorkflow:
                 "title": "Test Paper",
                 "abstract": "This is a test abstract.",
                 "keywords": "test, paper, ai",
-                "authors": [
-                    {"name": "John Doe", "institution": "MIT", "email": "john@mit.edu"}
-                ],
+                "authors": [{"name": "John Doe", "institution": "MIT", "email": "john@mit.edu"}],
                 "corresponding_author": {
                     "name": "John Doe",
                     "institution": "MIT",
@@ -238,7 +236,10 @@ class TestSubmissionWorkflow:
             json={"content": "Thank you for the feedback. We have addressed the issues."},
         )
         assert resp.status_code == 201
-        assert resp.json()["data"]["content"] == "Thank you for the feedback. We have addressed the issues."
+        assert (
+            resp.json()["data"]["content"]
+            == "Thank you for the feedback. We have addressed the issues."
+        )
 
         # Author submits revision
         resp = client.post(
@@ -266,9 +267,7 @@ class TestSubmissionWorkflow:
                 "title": "To Withdraw",
                 "abstract": "Abstract",
                 "keywords": "withdraw",
-                "authors": [
-                    {"name": "Bob", "institution": "CMU", "email": "bob@cmu.edu"}
-                ],
+                "authors": [{"name": "Bob", "institution": "CMU", "email": "bob@cmu.edu"}],
                 "corresponding_author": {
                     "name": "Bob",
                     "institution": "CMU",

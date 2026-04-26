@@ -4,7 +4,9 @@ from fastapi.testclient import TestClient
 
 
 def register(client: TestClient, email="test@example.com", password="password123", **kwargs):
-    return client.post("/api/v1/users/register", json={"email": email, "password": password, **kwargs})
+    return client.post(
+        "/api/v1/users/register", json={"email": email, "password": password, **kwargs}
+    )
 
 
 def login(client: TestClient, email="test@example.com", password="password123"):
@@ -41,8 +43,8 @@ class TestLogin:
         r = login(client)
         assert r.status_code == 200
         data = r.json()
-        assert "access_token" in data
-        assert data["token_type"] == "bearer"
+        assert "access_token" in data["data"]
+        assert data["data"]["token_type"] == "bearer"
 
     def test_login_wrong_password(self, client):
         register(client)
@@ -57,7 +59,7 @@ class TestLogin:
 class TestMe:
     def _auth_headers(self, client):
         register(client)
-        token = login(client).json()["access_token"]
+        token = login(client).json()["data"]["access_token"]
         return {"Authorization": f"Bearer {token}"}
 
     def test_get_me(self, client):
@@ -65,9 +67,9 @@ class TestMe:
         r = client.get("/api/v1/users/me", headers=headers)
         assert r.status_code == 200
         data = r.json()
-        assert data["email"] == "test@example.com"
-        assert data["role"] == "participant"
-        assert data["is_active"] is True
+        assert data["data"]["email"] == "test@example.com"
+        assert data["data"]["role"] == "participant"
+        assert data["data"]["is_active"] is True
 
     def test_get_me_unauthenticated(self, client):
         r = client.get("/api/v1/users/me")
@@ -82,8 +84,8 @@ class TestMe:
         )
         assert r.status_code == 200
         data = r.json()
-        assert data["full_name"] == "Alice"
-        assert data["institution"] == "MIT"
+        assert data["data"]["full_name"] == "Alice"
+        assert data["data"]["institution"] == "MIT"
 
     def test_change_password(self, client):
         headers = self._auth_headers(client)

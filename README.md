@@ -115,3 +115,6 @@ See `.env.example` for all available variables.
 | GET | `/items/{id}` | Get an item |
 | PUT | `/items/{id}` | Update an item |
 | DELETE | `/items/{id}` | Delete an item |
+
+
+.....

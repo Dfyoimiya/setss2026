@@ -9,9 +9,7 @@ class SubmissionFile(Base):
     __tablename__ = "submission_files"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
-    submission_id = Column(
-        String, ForeignKey("submissions.id"), nullable=False, index=True
-    )
+    submission_id = Column(String, ForeignKey("submissions.id"), nullable=False, index=True)
     file_name = Column(String(255), nullable=False)
     minio_key = Column(String(1024), nullable=False)
     file_size = Column(Integer, nullable=False)

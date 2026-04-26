@@ -6,7 +6,7 @@ from app.core.database import Base
 
 
 class User(Base):
-    """"Model representing a user in the system.
+    """ "Model representing a user in the system.
 
     Attributes:
         id: Unique identifier for the user.
@@ -23,6 +23,7 @@ class User(Base):
         created_at: Timestamp when the user account was created.
         updated_at: Timestamp when the user account was last updated.
     """
+
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)

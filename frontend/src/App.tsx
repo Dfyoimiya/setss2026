@@ -1,93 +1,52 @@
-import { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import AuthGuard from '@/components/AuthGuard'
+import Home from '@/pages/Home'
+import Committee from '@/pages/Committee'
+import Courses from '@/pages/Courses'
+import PreviousEditions from '@/pages/PreviousEditions'
+import RegistrationPage from '@/pages/RegistrationPage'
+import Transportation from '@/pages/Transportation'
+import Accommodation from '@/pages/Accommodation'
+import Dashboard from '@/pages/Dashboard'
+import SubmissionNew from '@/pages/SubmissionNew'
+import SubmissionDetail from '@/pages/SubmissionDetail'
+import ReviewerAssignments from '@/pages/ReviewerAssignments'
+import AssignmentReview from '@/pages/AssignmentReview'
+import AdminLayout from '@/pages/AdminLayout'
+import AdminUsers from '@/pages/AdminUsers'
+import AdminSubmissions from '@/pages/AdminSubmissions'
+import AdminReviews from '@/pages/AdminReviews'
+import AdminPeriods from '@/pages/AdminPeriods'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-
-interface Item {
-  id: number
-  name: string
-  description: string | null
-  created_at: string
-  updated_at: string
-}
-
-function App() {
-  const [message, setMessage] = useState('')
-  const [items, setItems] = useState<Item[]>([])
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-
-  const fetchItems = async () => {
-    const res = await fetch(`${API_URL}/items/`)
-    if (res.ok) {
-      setItems(await res.json())
-    }
-  }
-
-  useEffect(() => {
-    fetch(`${API_URL}/`)
-      .then((r) => r.json())
-      .then((data) => setMessage(data.message))
-    fetchItems()
-  }, [])
-
-  const createItem = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const res = await fetch(`${API_URL}/items/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, description: description || null }),
-    })
-    if (res.ok) {
-      setName('')
-      setDescription('')
-      fetchItems()
-    }
-  }
-
-  const deleteItem = async (id: number) => {
-    const res = await fetch(`${API_URL}/items/${id}`, { method: 'DELETE' })
-    if (res.ok) fetchItems()
-  }
-
+export default function App() {
   return (
-    <div style={{ maxWidth: 640, margin: '0 auto', padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>SETSS2026</h1>
-      <p><strong>Backend says:</strong> {message}</p>
+    <Routes>
+      {/* Public pages */}
+      <Route path="/" element={<Home />} />
+      <Route path="/committee" element={<Committee />} />
+      <Route path="/courses" element={<Courses />} />
+      <Route path="/previous-editions" element={<PreviousEditions />} />
+      <Route path="/registration" element={<RegistrationPage />} />
+      <Route path="/transportation" element={<Transportation />} />
+      <Route path="/accommodation" element={<Accommodation />} />
 
-      <h2>Create Item</h2>
-      <form onSubmit={createItem} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <button type="submit">Create</button>
-      </form>
+      {/* Protected: any authenticated user */}
+      <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
+      <Route path="/submissions/new" element={<AuthGuard><SubmissionNew /></AuthGuard>} />
+      <Route path="/submissions/:id" element={<AuthGuard><SubmissionDetail /></AuthGuard>} />
 
-      <h2>Items</h2>
-      {items.length === 0 ? (
-        <p>No items yet.</p>
-      ) : (
-        <ul>
-          {items.map((item) => (
-            <li key={item.id} style={{ marginBottom: 8 }}>
-              <strong>{item.name}</strong>
-              {item.description && <span> — {item.description}</span>}
-              <button onClick={() => deleteItem(item.id)} style={{ marginLeft: 8 }}>
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+      {/* Protected: reviewer */}
+      <Route path="/reviewer/assignments" element={<AuthGuard requiredRole="reviewer"><ReviewerAssignments /></AuthGuard>} />
+      <Route path="/reviewer/assignments/:id" element={<AuthGuard requiredRole="reviewer"><AssignmentReview /></AuthGuard>} />
+
+      {/* Protected: admin/organizer */}
+      <Route path="/admin" element={<AuthGuard requiredRole="organizer"><AdminLayout /></AuthGuard>}>
+        <Route index element={<AdminSubmissions />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="submissions" element={<AdminSubmissions />} />
+        <Route path="reviews" element={<AdminReviews />} />
+        <Route path="periods" element={<AdminPeriods />} />
+      </Route>
+    </Routes>
   )
 }
-
-export default App

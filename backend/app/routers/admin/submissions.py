@@ -144,7 +144,9 @@ def make_decision(
     # Transition to the decision state
     valid_decisions = ["accepted", "rejected", "minor_revision", "major_revision"]
     if decision_in.decision not in valid_decisions:
-        raise HTTPException(status_code=400, detail=f"Invalid decision. Must be one of: {valid_decisions}")
+        raise HTTPException(
+            status_code=400, detail=f"Invalid decision. Must be one of: {valid_decisions}"
+        )
 
     updated = crud_submission.transition_status(db, submission, decision_in.decision)
     return ok(data={"id": updated.id, "status": updated.status})

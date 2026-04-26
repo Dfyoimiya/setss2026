@@ -61,20 +61,22 @@ def get_period(
     period = crud_period.get(db, period_id)
     if not period:
         raise PeriodNotFoundError()
-    return ok(data={
-        "id": period.id,
-        "name": period.name,
-        "description": period.description,
-        "start_date": period.start_date,
-        "end_date": period.end_date,
-        "review_deadline": period.review_deadline,
-        "rebuttal_deadline": period.rebuttal_deadline,
-        "final_decision_deadline": period.final_decision_deadline,
-        "reviewers_per_paper": period.reviewers_per_paper,
-        "is_active": period.is_active,
-        "created_at": period.created_at,
-        "updated_at": period.updated_at,
-    })
+    return ok(
+        data={
+            "id": period.id,
+            "name": period.name,
+            "description": period.description,
+            "start_date": period.start_date,
+            "end_date": period.end_date,
+            "review_deadline": period.review_deadline,
+            "rebuttal_deadline": period.rebuttal_deadline,
+            "final_decision_deadline": period.final_decision_deadline,
+            "reviewers_per_paper": period.reviewers_per_paper,
+            "is_active": period.is_active,
+            "created_at": period.created_at,
+            "updated_at": period.updated_at,
+        }
+    )
 
 
 @router.put("/{period_id}", response_model=ApiResponse)

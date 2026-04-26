@@ -18,7 +18,13 @@ def get_active(db: Session) -> SubmissionPeriod | None:
 
 
 def get_multi(db: Session, skip: int = 0, limit: int = 100) -> list[SubmissionPeriod]:
-    return db.query(SubmissionPeriod).order_by(SubmissionPeriod.created_at.desc()).offset(skip).limit(limit).all()
+    return (
+        db.query(SubmissionPeriod)
+        .order_by(SubmissionPeriod.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def create(db: Session, obj_in: SubmissionPeriodCreate) -> SubmissionPeriod:

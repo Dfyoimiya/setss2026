@@ -25,13 +25,13 @@ class BizCode(IntEnum):
     # ------------------------------------------------------------------
     # Parameter / Request errors  (1xxx)
     # ------------------------------------------------------------------
-    PARAM_ERROR = 1001          # generic parameter error
-    PARAM_MISSING = 1002        # required field missing
-    PARAM_TYPE_ERROR = 1003     # type mismatch
-    PARAM_FORMAT_ERROR = 1004   # regex / format invalid
-    PARAM_OUT_OF_RANGE = 1005   # numeric value out of allowed range
-    PARAM_TOO_LONG = 1006       # string exceeds max length
-    PARAM_TOO_SHORT = 1007      # string below min length
+    PARAM_ERROR = 1001  # generic parameter error
+    PARAM_MISSING = 1002  # required field missing
+    PARAM_TYPE_ERROR = 1003  # type mismatch
+    PARAM_FORMAT_ERROR = 1004  # regex / format invalid
+    PARAM_OUT_OF_RANGE = 1005  # numeric value out of allowed range
+    PARAM_TOO_LONG = 1006  # string exceeds max length
+    PARAM_TOO_SHORT = 1007  # string below min length
 
     # ------------------------------------------------------------------
     # Authentication / Authorization errors  (2xxx)
@@ -80,7 +80,7 @@ class BizCode(IntEnum):
     OPERATION_NOT_ALLOWED = 4002
     LIMIT_EXCEEDED = 4003
     QUOTA_EXHAUSTED = 4004
-    STATE_INVALID = 4005        # e.g. illegal state transition
+    STATE_INVALID = 4005  # e.g. illegal state transition
     PRECONDITION_FAILED = 4006
     DEPENDENCY_NOT_MET = 4007
     PERIOD_CLOSED = 400101

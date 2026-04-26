@@ -109,9 +109,7 @@ def complete(db: Session, db_obj: ReviewAssignment) -> ReviewAssignment:
     return db_obj
 
 
-def get_candidate_reviewers(
-    db: Session, submission_id: str, exclude_user_id: str
-) -> list[User]:
+def get_candidate_reviewers(db: Session, submission_id: str, exclude_user_id: str) -> list[User]:
     """Return eligible reviewers who are not already assigned to this submission."""
     already_assigned = [
         r[0]
@@ -153,9 +151,7 @@ def auto_assign(
         return []
 
     # Sort by workload (ascending), then pick randomly among the least loaded
-    candidates_with_load = [
-        (c, get_reviewer_workload(db, c.id)) for c in candidates
-    ]
+    candidates_with_load = [(c, get_reviewer_workload(db, c.id)) for c in candidates]
     candidates_with_load.sort(key=lambda x: x[1])
 
     selected = []
@@ -166,15 +162,11 @@ def auto_assign(
         pool = [c for c, load in candidates_with_load if load == min_load]
         chosen = random.choice(pool)
         selected.append(chosen)
-        candidates_with_load = [
-            (c, load) for c, load in candidates_with_load if c.id != chosen.id
-        ]
+        candidates_with_load = [(c, load) for c, load in candidates_with_load if c.id != chosen.id]
 
     assignments = []
     for reviewer in selected:
-        assignments.append(
-            create(db, submission_id, reviewer.id, deadline, assigned_by)
-        )
+        assignments.append(create(db, submission_id, reviewer.id, deadline, assigned_by))
     return assignments
 
 

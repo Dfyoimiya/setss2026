@@ -2,9 +2,6 @@
 
 from unittest.mock import patch
 
-import pytest
-from fastapi.testclient import TestClient
-
 from app.auth import require_admin
 from app.main import app
 from app.models.user import User
