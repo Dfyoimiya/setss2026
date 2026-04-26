@@ -33,17 +33,17 @@ def create_item(payload: ItemCreate, db: Session = Depends(get_db)):
     db.add(item)
     db.commit()
     db.refresh(item)
-    return ok(data=ItemResponse.model_validate(item).model_dump(mode="json"),
-              message="Item created successfully")
+    return ok(
+        data=ItemResponse.model_validate(item).model_dump(mode="json"),
+        message="Item created successfully",
+    )
 
 
 @router.get("/{item_id}")
 def get_item(item_id: int, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
-        raise ItemNotFoundError(
-            message=f"Item with id={item_id} not found"
-        ).to_http()
+        raise ItemNotFoundError(message=f"Item with id={item_id} not found").to_http()
     return ok(data=ItemResponse.model_validate(item).model_dump(mode="json"))
 
 
@@ -51,9 +51,7 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
 def update_item(item_id: int, payload: ItemUpdate, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
-        raise ItemNotFoundError(
-            message=f"Item with id={item_id} not found"
-        ).to_http()
+        raise ItemNotFoundError(message=f"Item with id={item_id} not found").to_http()
 
     if payload.name is not None:
         # basic business validation example
@@ -65,17 +63,17 @@ def update_item(item_id: int, payload: ItemUpdate, db: Session = Depends(get_db)
 
     db.commit()
     db.refresh(item)
-    return ok(data=ItemResponse.model_validate(item).model_dump(mode="json"),
-              message="Item updated successfully")
+    return ok(
+        data=ItemResponse.model_validate(item).model_dump(mode="json"),
+        message="Item updated successfully",
+    )
 
 
 @router.delete("/{item_id}")
 def delete_item(item_id: int, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
-        raise ItemNotFoundError(
-            message=f"Item with id={item_id} not found"
-        ).to_http()
+        raise ItemNotFoundError(message=f"Item with id={item_id} not found").to_http()
 
     db.delete(item)
     db.commit()

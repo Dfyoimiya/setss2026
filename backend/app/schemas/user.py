@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
@@ -15,6 +16,7 @@ class LoginRequest(BaseModel):
 
 
 # ── User ──────────────────────────────────────────────────────────────────────
+
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -61,6 +63,7 @@ class UserResponse(BaseModel):
 
 # ── Password reset ────────────────────────────────────────────────────────────
 
+
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
@@ -79,6 +82,7 @@ class ResetPasswordRequest(BaseModel):
 
 # ── Admin ─────────────────────────────────────────────────────────────────────
 
+
 class RoleUpdate(BaseModel):
     role: str
 
@@ -88,6 +92,7 @@ class StatusUpdate(BaseModel):
 
 
 # ── Generic ───────────────────────────────────────────────────────────────────
+
 
 class MessageResponse(BaseModel):
     message: str

@@ -50,6 +50,7 @@ class AppError(Exception):
 # 4xx Client errors
 # ---------------------------------------------------------------------------
 
+
 class ValidationError(AppError):
     """Request validation error (business logic level)."""
 
@@ -156,6 +157,7 @@ class BusinessError(AppError):
 # 5xx Server errors
 # ---------------------------------------------------------------------------
 
+
 class DatabaseError(AppError):
     """Database operation failure."""
 
@@ -193,6 +195,7 @@ class ExternalServiceError(AppError):
 # ---------------------------------------------------------------------------
 # Redundant granular exceptions (kept for convenience & precise codes)
 # ---------------------------------------------------------------------------
+
 
 class ItemNotFoundError(NotFoundError):
     def __init__(self, message: str = "Item not found"):

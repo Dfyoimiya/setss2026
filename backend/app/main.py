@@ -33,6 +33,7 @@ app.add_middleware(
 
 # ===== Global exception handlers =====
 
+
 @app.exception_handler(AppError)
 async def app_exception_handler(request: Request, exc: AppError):
     return JSONResponse(
@@ -46,10 +47,7 @@ async def app_exception_handler(request: Request, exc: AppError):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    errors = [
-        {"field": ".".join(str(x) for x in e["loc"]), "msg": e["msg"]}
-        for e in exc.errors()
-    ]
+    errors = [{"field": ".".join(str(x) for x in e["loc"]), "msg": e["msg"]} for e in exc.errors()]
     return JSONResponse(
         status_code=422,
         content=ApiResponse.error(

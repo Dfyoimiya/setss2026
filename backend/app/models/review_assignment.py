@@ -9,9 +9,7 @@ class ReviewAssignment(Base):
     __tablename__ = "review_assignments"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
-    submission_id = Column(
-        String, ForeignKey("submissions.id"), nullable=False, index=True
-    )
+    submission_id = Column(String, ForeignKey("submissions.id"), nullable=False, index=True)
     reviewer_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
     status = Column(String(50), default="pending", nullable=False, index=True)
     assigned_by = Column(String, ForeignKey("users.id"), nullable=True)

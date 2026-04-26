@@ -40,5 +40,5 @@ jobs:
 
       - name: Run lint (ruff)
         run: |
-          uv run ruff check app tests || true
-          uv run ruff format --check app tests || true
+          uv run ruff check app tests
+          uv run ruff format --check app tests

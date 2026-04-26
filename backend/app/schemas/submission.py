@@ -75,8 +75,7 @@ class SubmissionReviewerView(BaseModel):
     def from_submission(cls, submission: SubmissionResponse) -> "SubmissionReviewerView":
         """Mask author identities for double-blind review."""
         masked_authors = [
-            AuthorInfo(name=a.name, institution=a.institution, email="")
-            for a in submission.authors
+            AuthorInfo(name=a.name, institution=a.institution, email="") for a in submission.authors
         ]
         masked_corresponding = CorrespondingAuthor(
             name=submission.corresponding_author.name,

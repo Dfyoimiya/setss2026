@@ -99,6 +99,7 @@ class PagedApiResponse(ApiResponse):
 # Router-level convenience helpers
 # ---------------------------------------------------------------------------
 
+
 def ok(data: Any = None, message: str = "success") -> ApiResponse:
     """Return a successful ``ApiResponse`` (shortcut)."""
     return ApiResponse.ok(data=data, message=message)

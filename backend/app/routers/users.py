@@ -18,7 +18,6 @@ from app.models.user import User
 from app.schemas.user import (
     ForgotPasswordRequest,
     LoginRequest,
-    MessageResponse,
     PasswordChange,
     ResetPasswordRequest,
     Token,
@@ -38,7 +37,11 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     if settings.EMAIL_ENABLED:
         token = secrets.token_urlsafe(32)
         crud_user.create(db, user_in, verify_token=token)
-        return created(data={"message": "Registration successful. Please check your email to activate your account."})
+        return created(
+            data={
+                "message": "Registration successful. Please check your email to activate your account."
+            }
+        )
     else:
         crud_user.create(db, user_in, verify_token=None)
         return created(data={"message": "Registration successful."})
@@ -62,7 +65,9 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     if not user or not verify_password(login_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
     if not user.is_active:
-        raise HTTPException(status_code=400, detail="Account not activated. Please verify your email.")
+        raise HTTPException(
+            status_code=400, detail="Account not activated. Please verify your email."
+        )
     access_token = create_access_token(
         data={"sub": user.id},
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
@@ -87,7 +92,9 @@ def reset_password(body: ResetPasswordRequest, db: Session = Depends(get_db)):
     if not user or not user.password_reset_expires:
         raise HTTPException(status_code=400, detail="Invalid or expired reset link")
     if user.password_reset_expires < datetime.now(UTC):
-        raise HTTPException(status_code=400, detail="Reset link has expired. Please request a new one.")
+        raise HTTPException(
+            status_code=400, detail="Reset link has expired. Please request a new one."
+        )
     user.hashed_password = get_password_hash(body.new_password)
     user.password_reset_token = None
     user.password_reset_expires = None

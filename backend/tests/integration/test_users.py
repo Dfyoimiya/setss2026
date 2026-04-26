@@ -4,7 +4,9 @@ from fastapi.testclient import TestClient
 
 
 def register(client: TestClient, email="test@example.com", password="password123", **kwargs):
-    return client.post("/api/v1/users/register", json={"email": email, "password": password, **kwargs})
+    return client.post(
+        "/api/v1/users/register", json={"email": email, "password": password, **kwargs}
+    )
 
 
 def login(client: TestClient, email="test@example.com", password="password123"):

@@ -182,9 +182,7 @@ def update_submission(
 
     # Only drafts or revision states can be edited
     if submission.status not in ("draft", "minor_revision", "major_revision"):
-        raise PeriodClosedError(
-            "Submissions can only be edited when in draft or revision state"
-        )
+        raise PeriodClosedError("Submissions can only be edited when in draft or revision state")
 
     # Check period is still open for edits (if not draft)
     if submission.status != "draft":
@@ -351,7 +349,9 @@ def create_rebuttal(
     # Verify the review belongs to the current user's submission
     from app.models.review_assignment import ReviewAssignment
 
-    assignment = db.query(ReviewAssignment).filter(ReviewAssignment.id == review.assignment_id).first()
+    assignment = (
+        db.query(ReviewAssignment).filter(ReviewAssignment.id == review.assignment_id).first()
+    )
     if not assignment:
         raise NotFoundError("Assignment not found")
 
