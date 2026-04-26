@@ -34,7 +34,7 @@ def _register_user(client: TestClient, email: str, password: str = "password123"
         "/api/v1/users/login",
         json={"email": email, "password": password},
     )
-    return resp.json()["access_token"]
+    return resp.json()["data"]["access_token"]
 
 
 def _get_auth_headers(token: str) -> dict:
