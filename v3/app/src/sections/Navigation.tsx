@@ -35,7 +35,6 @@ export default function Navigation() {
       key: 'authors',
       href: '#authors',
       children: [
-        { key: 'importantDates', href: '#countdown' },
         { key: 'setss2026Submission', href: '#registration' },
         { key: 'paperSubmissionInstructions', href: '#registration' },
       ],
@@ -46,16 +45,16 @@ export default function Navigation() {
       href: '#schedule',
       children: [
         { key: 'programSchedule', href: '#schedule' },
-        { key: 'previousEditions', href: '#about' },
+        { key: 'previousEditions', href: '/previous-editions' },
       ],
     },
     {
       key: 'attend',
       href: '#registration',
       children: [
-        { key: 'registration', href: '#registration' },
-        { key: 'gettingThere', href: '#registration' },
-        { key: 'accommodation', href: '#registration' },
+        { key: 'registration', href: '/registration' }, 
+        { key: 'gettingThere', href: '/transportation' }, 
+        { key: 'accommodation', href: '/accommodation' }, 
       ],
     },
   ];

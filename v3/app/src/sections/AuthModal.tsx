@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, User, Mail, Lock } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -7,10 +8,10 @@ interface AuthModalProps {
   mode: 'login' | 'register';
   setMode: (mode: 'login' | 'register') => void;
   onLogin: (name: string, email: string) => void;
-  t: (key: string) => string;
 }
 
-export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin, t }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin }: AuthModalProps) {
+  const { t } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,11 +23,11 @@ export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin, t }
     e.preventDefault();
     setError('');
     if (!email || !password) {
-      setError('Please fill in all required fields');
+      setError(t('authFillRequired'));
       return;
     }
     if (mode === 'register' && !name) {
-      setError('Please enter your name');
+      setError(t('authEnterName'));
       return;
     }
     const displayName = mode === 'register' ? name : email.split('@')[0];
@@ -54,14 +55,16 @@ export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin, t }
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'register' && (
             <div>
-              <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Name</label>
+              <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+                {t('authName')}
+              </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name"
+                  placeholder={t('authYourName')}
                   className="w-full bg-white border border-slate-300 pl-10 pr-4 py-2.5 text-[13px] text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[#005C99]"
                 />
               </div>
@@ -69,7 +72,9 @@ export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin, t }
           )}
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Email</label>
+            <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+              {t('authEmail')}
+            </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -83,7 +88,9 @@ export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin, t }
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Password</label>
+            <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+              {t('authPassword')}
+            </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -106,14 +113,14 @@ export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin, t }
         <p className="mt-4 text-center text-[12px] text-slate-500">
           {mode === 'login' ? (
             <>
-              Don't have an account?{' '}
+              {t('authNoAccount')}{' '}
               <button onClick={() => setMode('register')} className="text-[#005C99] hover:underline font-medium">
                 {t('register')}
               </button>
             </>
           ) : (
             <>
-              Already have an account?{' '}
+              {t('authHasAccount')}{' '}
               <button onClick={() => setMode('login')} className="text-[#005C99] hover:underline font-medium">
                 {t('login')}
               </button>

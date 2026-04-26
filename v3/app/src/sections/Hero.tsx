@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useLanguage } from '@/hooks/useLanguage';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface HeroProps {
-  t: (key: string) => string;
-}
-
-export default function Hero({ t }: HeroProps) {
+export default function Hero() {
+  const { t } = useLanguage();
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -43,10 +43,6 @@ export default function Hero({ t }: HeroProps) {
       triggers.forEach((trigger) => trigger.kill());
     };
   }, []);
-
-  const scrollToReg = () => {
-    document.getElementById('registration')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <section
@@ -95,9 +91,9 @@ export default function Hero({ t }: HeroProps) {
             {t('heroVenue')}
           </p>
 
-          {/* Register Button */}
+          {/* Register Button - 跳转到注册页面 */}
           <button
-            onClick={scrollToReg}
+            onClick={() => navigate('/registration')}
             className="btn-primary text-[13px] tracking-wide uppercase px-8 py-3"
           >
             {t('registerNow')}

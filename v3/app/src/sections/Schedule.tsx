@@ -2,19 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Clock, Coffee, Utensils, Camera, Ship } from 'lucide-react';
-import type { Language } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/useLanguage';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ScheduleProps {
-  t: (key: string) => string;
-  lang: Language;
-}
-
 const scheduleData = [
   {
-    dateKey: 'scheduleDate1',
-    dayKey: 'scheduleDay1',
+    dateKey: 'scheduleDate1', dayKey: 'scheduleDay1',
     events: [
       { time: '08:30-09:15', title: 'Opening Session', detail: 'Welcome speeches by SWU President, Dean of CIS, and SETSS Briefing by Prof. Zhiming Liu. School Photo Taking.', type: 'special' },
       { time: '09:15-09:30', title: 'Testing Online Meeting', detail: 'Connectivity test with Prof. Moshe Y. Vardi', type: 'break' },
@@ -30,8 +24,7 @@ const scheduleData = [
     ],
   },
   {
-    dateKey: 'scheduleDate2',
-    dayKey: 'scheduleDay2',
+    dateKey: 'scheduleDate2', dayKey: 'scheduleDay2',
     events: [
       { time: '08:30-09:30', title: 'Lecture: Digital Twins: Connecting Models with The Real World', speaker: 'Prof. Einar Broch Johnsen', type: 'lecture' },
       { time: '09:30-09:45', title: 'Coffee Break', type: 'break' },
@@ -47,8 +40,7 @@ const scheduleData = [
     ],
   },
   {
-    dateKey: 'scheduleDate3',
-    dayKey: 'scheduleDay3',
+    dateKey: 'scheduleDate3', dayKey: 'scheduleDay3',
     events: [
       { time: '08:30-09:30', title: 'Lecture: Automata Learning and Testing with AALpy', speaker: 'Prof. Bernhard Aichernig', type: 'lecture' },
       { time: '09:30-09:45', title: 'Coffee Break', type: 'break' },
@@ -65,8 +57,7 @@ const scheduleData = [
     ],
   },
   {
-    dateKey: 'scheduleDate4',
-    dayKey: 'scheduleDay4',
+    dateKey: 'scheduleDate4', dayKey: 'scheduleDay4',
     events: [
       { time: '08:30-09:30', title: 'Lecture: Automata Learning and Testing with AALpy', speaker: 'Prof. Bernhard Aichernig', type: 'lecture' },
       { time: '09:30-09:45', title: 'Coffee Break', type: 'break' },
@@ -82,8 +73,7 @@ const scheduleData = [
     ],
   },
   {
-    dateKey: 'scheduleDate5',
-    dayKey: 'scheduleDay5',
+    dateKey: 'scheduleDate5', dayKey: 'scheduleDay5',
     events: [
       { time: '08:30-09:30', title: 'Lecture: Trustworthy Systems through Automated Reasoning, Certificates, and Runtime Monitoring', speaker: 'Prof. Emily Yu', type: 'lecture' },
       { time: '09:30-09:45', title: 'Coffee Break', type: 'break' },
@@ -96,8 +86,7 @@ const scheduleData = [
     ],
   },
   {
-    dateKey: 'scheduleDate6',
-    dayKey: 'scheduleDay6',
+    dateKey: 'scheduleDate6', dayKey: 'scheduleDay6',
     events: [
       { time: '08:30-09:30', title: 'Lecture: Formal and intelligent synthesis for high confidence HCPS software', speaker: 'Prof. Wei Dong', type: 'lecture' },
       { time: '09:30-09:45', title: 'Coffee Break', type: 'break' },
@@ -113,8 +102,7 @@ const scheduleData = [
     ],
   },
   {
-    dateKey: 'scheduleDate7',
-    dayKey: 'scheduleDay7',
+    dateKey: 'scheduleDate7', dayKey: 'scheduleDay7',
     events: [
       { time: '08:30-09:30', title: 'Workshop Session', type: 'workshop' },
       { time: '09:30-09:45', title: 'Coffee Break', type: 'break' },
@@ -132,24 +120,16 @@ const scheduleData = [
 ];
 
 const typeIcons: Record<string, React.ElementType> = {
-  lecture: Clock,
-  break: Coffee,
-  meal: Utensils,
-  special: Camera,
-  social: Ship,
-  workshop: Clock,
+  lecture: Clock, break: Coffee, meal: Utensils, special: Camera, social: Ship, workshop: Clock,
 };
 
 const typeColors: Record<string, string> = {
-  lecture: 'border-l-[#005C99] bg-white',
-  break: 'border-l-slate-300 bg-slate-50',
-  meal: 'border-l-amber-400 bg-amber-50',
-  special: 'border-l-emerald-500 bg-emerald-50',
-  social: 'border-l-purple-400 bg-purple-50',
-  workshop: 'border-l-orange-400 bg-orange-50',
+  lecture: 'border-l-[#005C99] bg-white', break: 'border-l-slate-300 bg-slate-50', meal: 'border-l-amber-400 bg-amber-50',
+  special: 'border-l-emerald-500 bg-emerald-50', social: 'border-l-purple-400 bg-purple-50', workshop: 'border-l-orange-400 bg-orange-50',
 };
 
-export default function Schedule({ t }: ScheduleProps) {
+export default function Schedule() {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeDay, setActiveDay] = useState(0);
 
@@ -159,10 +139,8 @@ export default function Schedule({ t }: ScheduleProps) {
     const items = section.querySelectorAll('.sched-animate');
     const tl = gsap.fromTo(items,
       { opacity: 0, y: 20 },
-      {
-        opacity: 1, y: 0, stagger: 0.05, duration: 0.5, ease: 'power2.out',
-        scrollTrigger: { trigger: section, start: 'top 75%', toggleActions: 'play none none none' },
-      }
+      { opacity: 1, y: 0, stagger: 0.05, duration: 0.5, ease: 'power2.out',
+        scrollTrigger: { trigger: section, start: 'top 75%', toggleActions: 'play none none none' } }
     );
     return () => { tl.kill(); };
   }, []);
@@ -199,32 +177,23 @@ export default function Schedule({ t }: ScheduleProps) {
           <div className="w-12 h-1 bg-[#005C99] mx-auto mt-4" />
         </div>
 
-        {/* Day Tabs */}
         <div className="sched-animate flex flex-wrap gap-1 mb-8 border-b border-slate-200">
           {scheduleData.map((day, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveDay(idx)}
+            <button key={idx} onClick={() => setActiveDay(idx)}
               className={`px-4 py-2.5 text-[11px] sm:text-[12px] font-semibold transition-colors border-b-2 ${
-                activeDay === idx
-                  ? 'border-[#005C99] text-[#005C99]'
-                  : 'border-transparent text-slate-500 hover:text-slate-700'
-              }`}
-            >
+                activeDay === idx ? 'border-[#005C99] text-[#005C99]' : 'border-transparent text-slate-500 hover:text-slate-700'
+              }`}>
               {t(day.dateKey)}
             </button>
           ))}
         </div>
 
-        {/* Day Content */}
         <div className="sched-animate">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-[11px] font-bold text-white bg-[#005C99] px-2.5 py-1 uppercase tracking-wider">
               {t(scheduleData[activeDay].dayKey)}
             </span>
-            <span className="text-[13px] font-semibold text-slate-700">
-              {t(scheduleData[activeDay].dateKey)}
-            </span>
+            <span className="text-[13px] font-semibold text-slate-700">{t(scheduleData[activeDay].dateKey)}</span>
           </div>
 
           <div className="space-y-2">
@@ -233,10 +202,7 @@ export default function Schedule({ t }: ScheduleProps) {
               const displayTitle = getEventTitle(event.title, event.type);
               const displayDetail = getEventDetail(event.detail, event.title, event.type);
               return (
-                <div
-                  key={idx}
-                  className={`flex items-start gap-3 p-3 border-l-4 ${typeColors[event.type]} transition-colors hover:bg-slate-50`}
-                >
+                <div key={idx} className={`flex items-start gap-3 p-3 border-l-4 ${typeColors[event.type]} transition-colors hover:bg-slate-50`}>
                   <div className="flex items-center gap-2 min-w-[100px] flex-shrink-0">
                     <Icon className="w-3.5 h-3.5 text-slate-400" />
                     <span className="text-[11px] font-mono text-slate-500">{event.time}</span>
@@ -245,19 +211,10 @@ export default function Schedule({ t }: ScheduleProps) {
                     <p className={`text-[12px] sm:text-[13px] leading-snug ${
                       event.type === 'lecture' ? 'font-semibold text-slate-800' :
                       event.type === 'social' ? 'font-semibold text-purple-700' :
-                      event.type === 'special' ? 'font-semibold text-emerald-700' :
-                      'text-slate-600'
-                    }`}>
-                      {displayTitle}
-                    </p>
-                    {event.speaker && (
-                      <p className="text-[11px] text-[#005C99] mt-0.5 font-medium">
-                        {event.speaker}
-                      </p>
-                    )}
-                    {displayDetail && (
-                      <p className="text-[11px] text-slate-500 mt-0.5">{displayDetail}</p>
-                    )}
+                      event.type === 'special' ? 'font-semibold text-emerald-700' : 'text-slate-600'
+                    }`}>{displayTitle}</p>
+                    {event.speaker && <p className="text-[11px] text-[#005C99] mt-0.5 font-medium">{event.speaker}</p>}
+                    {displayDetail && <p className="text-[11px] text-slate-500 mt-0.5">{displayDetail}</p>}
                   </div>
                 </div>
               );

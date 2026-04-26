@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Mail, MapPin, Phone } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface RegistrationProps {
-  t: (key: string) => string;
-}
-
-export default function Registration({ t }: RegistrationProps) {
+export default function Registration() {
+  const { t } = useLanguage();
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,7 +49,10 @@ export default function Registration({ t }: RegistrationProps) {
             </p>
 
             <div className="reg-animate flex flex-wrap gap-3">
-              <button className="btn-primary">
+              <button
+                onClick={() => navigate('/registration')}
+                className="btn-primary"
+              >
                 <span>{t('registerNow')}</span>
                 <ArrowRight className="w-4 h-4 ml-2" />
               </button>

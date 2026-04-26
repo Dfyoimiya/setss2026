@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/hooks/useAuth';
 import Header from '@/sections/Header';
 import Navigation from '@/sections/Navigation';
@@ -17,7 +16,6 @@ import Footer from '@/sections/Footer';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const { lang, t, toggleLang } = useLanguage();
   const { user, login, logout } = useAuth();
   const lenisRef = useRef<Lenis | null>(null);
 
@@ -40,23 +38,16 @@ export default function Home() {
 
   return (
     <div className="relative bg-white">
-      <Header
-        lang={lang}
-        t={t}
-        toggleLang={toggleLang}
-        user={user}
-        login={login}
-        logout={logout}
-      />
-      <Navigation lang={lang} t={t} />
+      <Header user={user} login={login} logout={logout} />
+      <Navigation />
 
       <main>
-        <Hero t={t} />
-        <Countdown t={t} />
-        <Welcome t={t} />
-        <Speakers t={t} />
-        <Schedule t={t} lang={lang} />
-        <Registration t={t} />
+        <Hero />
+        <Countdown />
+        <Welcome />
+        <Speakers />
+        <Schedule />
+        <Registration />
       </main>
 
       <Footer />
