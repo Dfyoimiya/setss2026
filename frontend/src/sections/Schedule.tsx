@@ -128,8 +128,47 @@ const typeColors: Record<string, string> = {
   special: 'border-l-emerald-500 bg-emerald-50', social: 'border-l-purple-400 bg-purple-50', workshop: 'border-l-orange-400 bg-orange-50',
 };
 
+const lectureTitleMap: Record<string, { en: string; zh: string }> = {
+  'Lecture: Are AI minds genuine minds?': {
+    en: 'Lecture: Are AI minds genuine minds?',
+    zh: '讲座：AI 的心智是真正的心智吗？',
+  },
+  "Lecture: Tony Hoare: A Life of Logic, Theory, and Practice": {
+    en: "Lecture: Tony Hoare: A Life of Logic, Theory, and Practice",
+    zh: '讲座：Tony Hoare 的科学人生与成就',
+  },
+  'Lecture: Digital Twins: Connecting Models with The Real World': {
+    en: 'Lecture: Digital Twins: Connecting Models with The Real World',
+    zh: '讲座：数字孪生：将模型与现实世界连接',
+  },
+  'Lecture: Model Checking, Monitoring, Performance Analysis, Synthesis and Learning for CPS': {
+    en: 'Lecture: Model Checking, Monitoring, Performance Analysis, Synthesis and Learning for CPS',
+    zh: '讲座：信息物理系统的模型检验、监控、性能分析、合成与学习',
+  },
+  'Lecture: Automata Learning and Testing with AALpy': {
+    en: 'Lecture: Automata Learning and Testing with AALpy',
+    zh: '讲座：自动机学习与 AALpy 测试',
+  },
+  'Lecture: Trustworthy Systems through Automated Reasoning, Certificates, and Runtime Monitoring': {
+    en: 'Lecture: Trustworthy Systems through Automated Reasoning, Certificates, and Runtime Monitoring',
+    zh: '讲座：通过自动推理、证书与运行时监控实现可信系统',
+  },
+  'Lecture: Bringing AI to Autonomous Systems': {
+    en: 'Lecture: Bringing AI to Autonomous Systems',
+    zh: '讲座：将 AI 引入自主系统',
+  },
+  'Lecture: Formal and intelligent synthesis for high confidence HCPS software': {
+    en: 'Lecture: Formal and intelligent synthesis for high confidence HCPS software',
+    zh: '讲座：高置信度 HCPS 软件的形式化与智能合成',
+  },
+  'Lecture: Learning and Verifying Timed Systems': {
+    en: 'Lecture: Learning and Verifying Timed Systems',
+    zh: '讲座：实时系统的学习与验证',
+  },
+};
+
 export default function Schedule() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeDay, setActiveDay] = useState(0);
 
@@ -155,6 +194,10 @@ export default function Schedule() {
     if (type === 'social') {
       if (title === 'Social Activity: Hot Pot Feast') return `${t('eventSocialPrefix')}: ${t('activityHotPot')}`;
       if (title === 'Social Activity: Chongqing Liangjiang Night Cruise') return `${t('eventSocialPrefix')}: ${t('activityCruise')}`;
+    }
+    if (type === 'lecture') {
+      const mapped = lectureTitleMap[title];
+      if (mapped) return mapped[lang];
     }
     return title;
   };

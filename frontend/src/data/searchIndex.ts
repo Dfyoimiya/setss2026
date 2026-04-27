@@ -154,7 +154,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-aalpy',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-0',
     title: { en: 'Automata Learning and Testing with AALpy', zh: 'Automata Learning and Testing with AALpy' },
     content: {
       en: 'Bernhard Aichernig Johannes Kepler University automata learning black-box testing AALpy tool python',
@@ -166,7 +166,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-hoare',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-1',
     title: { en: "Tony Hoare's Scientific Life", zh: 'Tony Hoare 的科学人生' },
     content: {
       en: 'Jonathan Bowen quicksort algorithm Hoare logic CSP communicating sequential processes turing award',
@@ -178,7 +178,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-digital-twins',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-3',
     title: { en: 'Digital Twins', zh: '数字孪生' },
     content: {
       en: 'Einar Broch Johnsen University of Oslo digital twins cyber-physical systems ABS SMOL sensor-driven model',
@@ -190,7 +190,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-uppaal',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-4',
     title: { en: 'Model Checking with UPPAAL', zh: 'UPPAAL 模型检验' },
     content: {
       en: 'Kim Guldstrand Larsen Aalborg University UPPAAL timed automata priced timed automata model checking CAV award',
@@ -202,7 +202,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-autonomous',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-5',
     title: { en: 'Bringing AI to Autonomous Systems', zh: '将 AI 引入自主系统' },
     content: {
       en: 'Joseph Sifakis Turing Award Verimag EPFL autonomous systems multi-agent reinforcement learning planning',
@@ -214,7 +214,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-ai-minds',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-6',
     title: { en: 'Are AI Minds Genuine Minds?', zh: 'AI 是否拥有真正的心智？' },
     content: {
       en: 'Moshe Vardi Rice University Goedel Prize Knuth Prize artificial intelligence consciousness philosophy of mind',
@@ -226,7 +226,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-timed-systems',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-8',
     title: { en: 'Learning and Verifying Timed Systems', zh: '实时系统的学习与验证' },
     content: {
       en: 'Miaomiao Zhang Tongji University timed automata runtime verification model learning',
@@ -238,7 +238,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-trustworthy',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-7',
     title: { en: 'Trustworthy Systems via Automated Reasoning', zh: '通过自动推理实现可信系统' },
     content: {
       en: 'Emily Yu Leiden University SAT SMT runtime monitoring neural certificates formal verification',
@@ -250,7 +250,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'course-synthesis',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-2',
     title: { en: 'Formal and Intelligent Synthesis', zh: '形式化与智能程序合成' },
     content: {
       en: 'Wei Dong NUDT National University of Defense Technology program synthesis reactive synthesis LLM code generation HCPS',
@@ -264,7 +264,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-aichernig',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-0',
     title: { en: 'Prof. Bernhard K. Aichernig', zh: 'Prof. Bernhard K. Aichernig' },
     content: {
       en: 'Johannes Kepler University Linz Austria formal methods active learning',
@@ -276,7 +276,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-bowen',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-1',
     title: { en: 'Prof. Jonathan P. Bowen', zh: 'Prof. Jonathan P. Bowen' },
     content: {
       en: 'London South Bank University UK Emeritus Professor formal methods history of computing',
@@ -288,7 +288,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-dong',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-2',
     title: { en: 'Prof. Wei Dong', zh: 'Prof. Wei Dong' },
     content: {
       en: 'National University of Defense Technology China program analysis verification synthesis',
@@ -300,7 +300,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-johnsen',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-3',
     title: { en: 'Prof. Einar Broch Johnsen', zh: 'Prof. Einar Broch Johnsen' },
     content: {
       en: 'University of Oslo Norway digital twins ABS SMOL modeling verification',
@@ -312,7 +312,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-larsen',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-4',
     title: { en: 'Prof. Kim Guldstrand Larsen', zh: 'Prof. Kim Guldstrand Larsen' },
     content: {
       en: 'Aalborg University Denmark UPPAAL timed automata model checking CAV award',
@@ -324,7 +324,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-sifakis',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-5',
     title: { en: 'Prof. Joseph Sifakis', zh: 'Prof. Joseph Sifakis' },
     content: {
       en: 'Turing Award 2007 Verimag EPFL France Switzerland autonomous systems',
@@ -336,7 +336,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-vardi',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-6',
     title: { en: 'Prof. Moshe Y. Vardi', zh: 'Prof. Moshe Y. Vardi' },
     content: {
       en: 'Rice University USA Goedel Prize Knuth Prize database theory constraint satisfaction',
@@ -348,7 +348,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-yu',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-7',
     title: { en: 'Prof. Emily Yu', zh: 'Prof. Emily Yu' },
     content: {
       en: 'Leiden University Netherlands SAT SMT formal verification runtime monitoring',
@@ -360,7 +360,7 @@ export const searchIndex: SearchItem[] = [
   {
     id: 'speaker-miaomiao',
     page: '/courses',
-    sectionId: 'courses',
+    sectionId: 'speaker-8',
     title: { en: 'Prof. Miaomiao Zhang', zh: 'Prof. Miaomiao Zhang' },
     content: {
       en: 'Tongji University China timed systems model learning verification',
@@ -552,57 +552,5 @@ export const searchIndex: SearchItem[] = [
     },
     keywords: ['boree', '柏瑞', 'tiansheng', '天生路', '19936673214', 'boutique', '精品'],
     type: 'hotel',
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  //  Dashboard 页面
-  // ═══════════════════════════════════════════════════════════
-  {
-    id: 'dashboard',
-    page: '/dashboard',
-    sectionId: 'dashboard',
-    title: { en: 'My Dashboard', zh: '个人中心' },
-    content: {
-      en: 'Profile submissions papers management change password personal account',
-      zh: '个人信息 投稿管理 修改密码 个人账户',
-    },
-    keywords: ['dashboard', '个人中心', 'profile', '个人信息', 'password', '密码'],
-    type: 'section',
-  },
-  {
-    id: 'submission-new',
-    page: '/submissions/new',
-    sectionId: 'submission-new',
-    title: { en: 'New Submission', zh: '新建投稿' },
-    content: {
-      en: 'Create new paper submission title abstract keywords authors corresponding author',
-      zh: '创建新的论文投稿 标题 摘要 关键词 作者 通讯作者',
-    },
-    keywords: ['submission', '投稿', 'new', '新建', 'paper', '论文', 'create', '创建'],
-    type: 'section',
-  },
-  {
-    id: 'reviewer-dashboard',
-    page: '/reviewer/assignments',
-    sectionId: 'reviewer-dashboard',
-    title: { en: 'My Review Assignments', zh: '我的审稿分配' },
-    content: {
-      en: 'Review assignments peer review papers accept decline submit review',
-      zh: '审稿分配 同行评审 论文 接受 拒绝 提交审稿',
-    },
-    keywords: ['review', '审稿', 'assignment', '分配', 'reviewer', '审稿人', 'peer review', '同行评审'],
-    type: 'section',
-  },
-  {
-    id: 'admin',
-    page: '/admin',
-    sectionId: 'admin',
-    title: { en: 'Admin Panel', zh: '管理后台' },
-    content: {
-      en: 'User management submission management review assignments submission periods administration',
-      zh: '用户管理 投稿管理 审稿分配 投稿期管理 管理后台',
-    },
-    keywords: ['admin', '管理', 'administration', '后台', 'users', 'periods'],
-    type: 'section',
   },
 ];

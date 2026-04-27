@@ -56,14 +56,9 @@ export default function Registration() {
                 <span>{t('registerNow')}</span>
                 <ArrowRight className="w-4 h-4 ml-2" />
               </button>
-              <a
-                href="http://www.rise-swu.cn/SETSS2026"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-outline"
-              >
+              <button className="btn-outline">
                 {t('learnMore')}
-              </a>
+              </button>
             </div>
           </div>
 

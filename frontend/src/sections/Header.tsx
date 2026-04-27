@@ -1,60 +1,79 @@
-import { useState } from 'react'
-import { User, LogOut, Search, Globe, LayoutDashboard, Settings } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { useLanguage } from '@/hooks/useLanguage'
-import { useAuth } from '@/hooks/useAuth'
-import AuthModal from '@/sections/AuthModal'
-import { useGlobalSearch, highlightMatches } from '@/hooks/useGlobalSearch'
+import { useState } from 'react';
+import { User, LogOut, Search, Globe } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
+import type { User as AuthUser } from '@/hooks/useAuth';
+import AuthModal from '@/sections/AuthModal';
 
-export default function Header() {
-  const { lang, t, toggleLang } = useLanguage()
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
-  const [showAuth, setShowAuth] = useState(false)
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+// 引入你编写的搜索钩子与高亮函数 (请根据你的实际目录结构调整路径)
+import { useGlobalSearch, highlightMatches } from '@/hooks/useGlobalSearch'; 
 
-  const [searchQuery, setSearchQuery] = useState('')
-  const [showSearch, setShowSearch] = useState(false)
-  const [showUserMenu, setShowUserMenu] = useState(false)
+interface HeaderProps {
+  user: AuthUser | null;
+  login: (name: string, email: string) => void;
+  logout: () => void;
+}
 
-  const { search, goToResult, getResultMeta, getPageLabel } = useGlobalSearch()
-  const searchResults = search(searchQuery)
+export default function Header({ user, login, logout }: HeaderProps) {
+  const { lang, t, toggleLang } = useLanguage();
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+  const [hasPressedEnter, setHasPressedEnter] = useState(false);
+
+  // 获取搜索逻辑与方法
+  const { search, goToResult, getResultMeta, getPageLabel } = useGlobalSearch();
+  // 实时计算当前查询的结果
+  const searchResults = search(searchQuery);
 
   const openAuth = (mode: 'login' | 'register') => {
-    setAuthMode(mode)
-    setShowAuth(true)
-  }
+    setAuthMode(mode);
+    setShowAuth(true);
+  };
 
+  // 处理搜索输入变化
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setHasPressedEnter(false); // 查询变化时重置 Enter 状态
+  };
+
+  // 处理回车：第一次 Enter 仅确认输入（不跳转），第二次 Enter 跳转至第一项
   const handleSearchKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && searchResults.length > 0) {
-      goToResult(searchResults[0])
-      setSearchQuery('')
-      setShowSearch(false)
+      if (!hasPressedEnter) {
+        setHasPressedEnter(true);
+        return;
+      }
+      goToResult(searchResults[0]);
+      setSearchQuery('');
+      setShowSearch(false);
+      setHasPressedEnter(false);
     }
-  }
+  };
 
+  // 辅助函数：将含有 <<HL>> 和 <</HL>> 的字符串渲染为 React 高亮元素
   const renderHighlightedText = (text: string, query: string) => {
-    const highlighted = highlightMatches(text, query)
-    const parts = highlighted.split(/(<<HL>>.*?<<\/HL>>)/g)
+    const highlighted = highlightMatches(text, query);
+    const parts = highlighted.split(/(<<HL>>.*?<<\/HL>>)/g);
     return parts.map((part, i) => {
       if (part.startsWith('<<HL>>') && part.endsWith('<</HL>>')) {
         return (
           <span key={i} className="text-[#005C99] font-bold bg-blue-50/80 rounded-sm px-0.5">
             {part.slice(6, -7)}
           </span>
-        )
+        );
       }
-      return <span key={i}>{part}</span>
-    })
-  }
-
-  const hasRole = (role: string) => user?.role?.includes(role) ?? false
+      return <span key={i}>{part}</span>;
+    });
+  };
 
   return (
     <>
       <header className="bg-white border-b border-slate-200 relative z-[60]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-[72px]">
+            {/* Left: Logo + Conference Info */}
             <div className="flex items-center gap-4">
               <img
                 src="/images/setss-logo.png"
@@ -76,7 +95,9 @@ export default function Header() {
               </div>
             </div>
 
+            {/* Right: Language + Auth + Search */}
             <div className="flex items-center gap-3">
+              {/* Language Toggle */}
               <button
                 onClick={toggleLang}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-slate-600 hover:text-[#005C99] transition-colors border border-slate-200 rounded-sm"
@@ -85,39 +106,42 @@ export default function Header() {
                 <span>{lang === 'en' ? 'EN' : '中文'}</span>
               </button>
 
+              {/* Search */}
               <div className="relative">
                 {showSearch ? (
                   <div className="relative flex items-center">
                     <input
                       type="text"
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={handleSearchChange}
                       onKeyDown={handleSearchKeyDown}
                       onBlur={() => {
+                        // 稍微延迟关闭，以便让下拉菜单的 onClick 能够顺利触发
                         setTimeout(() => {
-                          if (!searchQuery) setShowSearch(false)
-                        }, 200)
+                          if (!searchQuery) setShowSearch(false);
+                        }, 200);
                       }}
                       placeholder={t('search') || 'Search...'}
                       autoFocus
                       className="w-64 bg-white border border-slate-300 rounded-sm px-3 py-1.5 text-[12px] text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[#005C99]"
                     />
-
+                    
+                    {/* 下拉搜索结果浮窗 */}
                     {searchQuery.trim() && (
                       <div className="absolute top-full right-0 mt-2 w-[320px] bg-white border border-slate-200 shadow-lg rounded-sm overflow-hidden z-50 max-h-96 overflow-y-auto">
                         {searchResults.length > 0 ? (
                           searchResults.map((res, index) => {
-                            const meta = getResultMeta(res.item.type)
-                            const pageLabel = getPageLabel(res.item.page)
+                            const meta = getResultMeta(res.item.type);
+                            const pageLabel = getPageLabel(res.item.page);
 
                             return (
                               <div
                                 key={index}
-                                onMouseDown={(e) => e.preventDefault()}
+                                onMouseDown={(e) => e.preventDefault()} // 阻止默认行为，防止 input 失去焦点
                                 onClick={() => {
-                                  goToResult(res)
-                                  setSearchQuery('')
-                                  setShowSearch(false)
+                                  goToResult(res);
+                                  setSearchQuery('');
+                                  setShowSearch(false);
                                 }}
                                 className="p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors"
                               >
@@ -142,7 +166,7 @@ export default function Header() {
                                   ))}
                                 </div>
                               </div>
-                            )
+                            );
                           })
                         ) : (
                           <div className="p-4 text-center text-[12px] text-slate-500">
@@ -162,49 +186,20 @@ export default function Header() {
                 )}
               </div>
 
+              {/* Auth */}
               {user ? (
-                <div className="relative ml-2">
+                <div className="flex items-center gap-2 ml-2">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                    <User className="w-4 h-4 text-slate-500" />
+                  </div>
+                  <span className="text-[12px] text-slate-700 hidden sm:inline">{user.name}</span>
                   <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2"
+                    onClick={logout}
+                    className="p-1.5 text-slate-400 hover:text-red-500 transition-colors"
+                    title={t('logout')}
                   >
-                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 hover:border-[#005C99] transition-colors">
-                      <User className="w-4 h-4 text-slate-500" />
-                    </div>
-                    <span className="text-[12px] text-slate-700 hidden sm:inline">{user.name}</span>
+                    <LogOut className="w-3.5 h-3.5" />
                   </button>
-
-                  {showUserMenu && (
-                    <>
-                      <div className="fixed inset-0 z-0" onClick={() => setShowUserMenu(false)} />
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-200 shadow-lg rounded-lg overflow-hidden z-50">
-                        <button
-                          onClick={() => { navigate('/dashboard'); setShowUserMenu(false); }}
-                          className="w-full flex items-center gap-2 px-4 py-2.5 text-[12px] text-slate-600 hover:bg-slate-50 transition-colors"
-                        >
-                          <LayoutDashboard className="w-4 h-4" />
-                          {t('dashboard') || 'Dashboard'}
-                        </button>
-                        {(hasRole('admin') || hasRole('organizer')) && (
-                          <button
-                            onClick={() => { navigate('/admin'); setShowUserMenu(false); }}
-                            className="w-full flex items-center gap-2 px-4 py-2.5 text-[12px] text-slate-600 hover:bg-slate-50 transition-colors"
-                          >
-                            <Settings className="w-4 h-4" />
-                            {t('adminPanel') || 'Admin Panel'}
-                          </button>
-                        )}
-                        <hr className="border-slate-100" />
-                        <button
-                          onClick={() => { logout(); setShowUserMenu(false); }}
-                          className="w-full flex items-center gap-2 px-4 py-2.5 text-[12px] text-red-500 hover:bg-red-50 transition-colors"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          {t('logout')}
-                        </button>
-                      </div>
-                    </>
-                  )}
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-[12px] ml-2">
@@ -233,7 +228,8 @@ export default function Header() {
         onClose={() => setShowAuth(false)}
         mode={authMode}
         setMode={setAuthMode}
+        onLogin={login}
       />
     </>
-  )
+  );
 }

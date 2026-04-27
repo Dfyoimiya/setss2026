@@ -7,6 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 gsap.registerPlugin(ScrollTrigger);
 
 interface Speaker {
+  id: number;
   name: string;
   title: string;
   affiliation: string;
@@ -14,15 +15,15 @@ interface Speaker {
 }
 
 const speakers: Speaker[] = [
-  { name: 'Prof. Moshe Y. Vardi', title: 'University Professor', affiliation: 'Rice University, USA', photo: '/images/speakers/6_Moshe_Vardi_Named_2026_NAAI_Academy.png' },
-  { name: 'Prof. Einar Broch Johnsen', title: 'Professor', affiliation: 'University of Oslo, Norway', photo: '/images/speakers/4_Einar_Broch_Johnsen.png' },
-  { name: 'Prof. Kim Guldstrand Larsen', title: 'Professor', affiliation: 'Aalborg University, Denmark', photo: '/images/speakers/2_Kim_Guldstrand_Larsen_Aalborg_Universitets.png' },
-  { name: 'Prof. Bernhard K. Aichernig', title: 'Professor', affiliation: 'Johannes Kepler University Linz, Austria', photo: '/images/speakers/1_Bernhard_AICHERNIG_Associate_Professor.png' },
-  { name: 'Prof. Emily Yu', title: 'Assistant Professor', affiliation: 'Leiden University, Netherlands', photo: '/images/speakers/8_Myunggyo_Emily_Yu_Retail_Management.png' },
-  { name: 'Prof. Joseph Sifakis', title: 'Professor, Turing Award Laureate', affiliation: 'Verimag / EPFL, France/Switzerland', photo: '/images/speakers/5_Joseph_Sifakis_A_M_Turing_Award_Laureat.png' },
-  { name: 'Prof. Wei Dong', title: 'Professor', affiliation: 'National University of Defense Technology, China', photo: '/images/speakers/6_Asst_Prof_Wei_Dong_Academic_Profile.png' },
-  { name: 'Prof. Miaomiao Zhang', title: 'Professor', affiliation: 'Tongji University, China', photo: '/images/speakers/2_Miaomiao_Zhang.png' },
-  { name: 'Prof. Jonathan P. Bowen', title: 'Emeritus Professor', affiliation: 'London South Bank University, UK', photo: '/images/speakers/3_Jonathan_Bowen_Formal_Methods_Wiki.png' },
+  { id: 0, name: 'Prof. Bernhard K. Aichernig', title: 'Professor', affiliation: 'Johannes Kepler University Linz, Austria', photo: '/images/speakers/Prof. DI Dr. Bernhard Aichernig.png' },
+  { id: 1, name: 'Prof. Jonathan P. Bowen', title: 'Emeritus Professor', affiliation: 'London South Bank University, UK', photo: '/images/speakers/Prof. Jonathan P. Bowen.png' },
+  { id: 2, name: 'Prof. Wei Dong', title: 'Professor', affiliation: 'National University of Defense Technology, China', photo: '/images/speakers/Prof. Wei Dong.png' },
+  { id: 3, name: 'Prof. Einar Broch Johnsen', title: 'Professor', affiliation: 'University of Oslo, Norway', photo: '/images/speakers/Prof. Einar Broch Johnsen.png' },
+  { id: 4, name: 'Prof. Kim Guldstrand Larsen', title: 'Professor', affiliation: 'Aalborg University, Denmark', photo: '/images/speakers/Prof. Kim Guldstrand Larsen.png' },
+  { id: 5, name: 'Prof. Joseph Sifakis', title: 'Professor, Turing Award Laureate', affiliation: 'Verimag / EPFL, France/Switzerland', photo: '/images/speakers/Prof. Joseph Sifakis.png' },
+  { id: 6, name: 'Prof. Moshe Y. Vardi', title: 'University Professor', affiliation: 'Rice University, USA', photo: '/images/speakers/Prof. Moshe Y. Vardi.png' },
+  { id: 7, name: 'Prof. Emily Yu', title: 'Assistant Professor', affiliation: 'Leiden University, Netherlands', photo: '/images/speakers/Prof. Emily Yu.png' },
+  { id: 8, name: 'Prof. Miaomiao Zhang', title: 'Professor', affiliation: 'Tongji University, China', photo: '/images/speakers/Prof. Miaomiao Zhang.png' },
 ];
 
 export default function Speakers() {
@@ -56,7 +57,7 @@ export default function Speakers() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
           {speakers.map((speaker) => (
             <div key={speaker.name} className="speaker-card group cursor-pointer"
-              onClick={() => navigate(`/courses?speaker=${encodeURIComponent(speaker.name)}`)}>
+              onClick={() => navigate(`/courses?speaker=${speaker.id}`)}>
               <div className="relative overflow-hidden bg-slate-200 aspect-[3/4]">
                 <img src={speaker.photo} alt={speaker.name}
                   className="w-full h-full object-cover saturate-[0.65] group-hover:saturate-100 transition-all duration-500 group-hover:scale-105" />
