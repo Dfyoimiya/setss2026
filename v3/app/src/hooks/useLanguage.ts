@@ -1,2 +1,2 @@
-export { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
-export type { Language } from '@/contexts/LanguageContext';
+export { useLanguage, LanguageProvider, getAllSpeakers, getSpeakerData } from '@/contexts/LanguageContext';
+export type { Language, SpeakerData } from '@/contexts/LanguageContext';

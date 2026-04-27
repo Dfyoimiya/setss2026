@@ -20,6 +20,8 @@ export default function Home() {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const lenis = new Lenis({ lerp: 0.12, smoothWheel: true });
     lenisRef.current = lenis;
 

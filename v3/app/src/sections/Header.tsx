@@ -20,6 +20,7 @@ export default function Header({ user, login, logout }: HeaderProps) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [hasPressedEnter, setHasPressedEnter] = useState(false);
 
   // 获取搜索逻辑与方法
   const { search, goToResult, getResultMeta, getPageLabel } = useGlobalSearch();
@@ -31,12 +32,23 @@ export default function Header({ user, login, logout }: HeaderProps) {
     setShowAuth(true);
   };
 
-  // 处理回车快捷跳转 (默认跳转至匹配的第一项)
+  // 处理搜索输入变化
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setHasPressedEnter(false); // 查询变化时重置 Enter 状态
+  };
+
+  // 处理回车：第一次 Enter 仅确认输入（不跳转），第二次 Enter 跳转至第一项
   const handleSearchKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && searchResults.length > 0) {
+      if (!hasPressedEnter) {
+        setHasPressedEnter(true);
+        return;
+      }
       goToResult(searchResults[0]);
       setSearchQuery('');
       setShowSearch(false);
+      setHasPressedEnter(false);
     }
   };
 
@@ -101,7 +113,7 @@ export default function Header({ user, login, logout }: HeaderProps) {
                     <input
                       type="text"
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={handleSearchChange}
                       onKeyDown={handleSearchKeyDown}
                       onBlur={() => {
                         // 稍微延迟关闭，以便让下拉菜单的 onClick 能够顺利触发

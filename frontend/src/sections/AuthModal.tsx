@@ -57,6 +57,7 @@ export default function AuthModal({ isOpen, onClose, mode, setMode }: AuthModalP
           setPassword('')
           setInstitution('')
           onClose()
+          window.location.reload()
         }
       } else {
         const ok = await register(name.trim(), email.trim(), password, institution.trim() || undefined)
