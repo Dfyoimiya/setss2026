@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuthStore } from '@/stores/authStore'
+import { isAdmin } from '@/api/types'
 import type { User } from '@/api/types'
 
 export interface AuthUser {
@@ -11,8 +12,8 @@ export interface AuthUser {
 function toAuthUser(u: User | null): AuthUser | null {
   if (!u) return null
   return {
-    name: u.full_name || u.email.split('@')[0],
-    email: u.email,
+    name: u.full_name || u.email?.split('@')[0] || '',
+    email: u.email || '',
   }
 }
 
@@ -32,6 +33,7 @@ export function useAuth() {
     user: toAuthUser(user),
     rawUser: user,
     isAuthenticated,
+    isAdmin: isAdmin(user?.role),
     logout: storeLogout,
     showAuthModal,
     setShowAuthModal: closeAuth,

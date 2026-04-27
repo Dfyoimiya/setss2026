@@ -12,9 +12,11 @@ import Papers from './pages/Papers'
 import PaperDetail from './pages/PaperDetail'
 import Reviews from './pages/Reviews'
 import ReviewDetail from './pages/ReviewDetail'
+import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminPapers from './pages/admin/AdminPapers'
 import AdminReviews from './pages/admin/AdminReviews'
+import AdminPeriods from './pages/admin/AdminPeriods'
 import ProtectedRoute from './components/ProtectedRoute'
 import DashboardLayout from './layouts/DashboardLayout'
 
@@ -30,24 +32,32 @@ export default function App() {
       <Route path="/transportation" element={<Transportation />} />
       <Route path="/accommodation" element={<Accommodation />} />
 
-      {/* 认证用户页面 */}
+      {/* 认证用户页面 - 公共 */}
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reviews" element={<Reviews />} />
+          <Route path="/reviews/:id" element={<ReviewDetail />} />
+        </Route>
+      </Route>
+
+      {/* 认证用户页面 - 仅作者可访问 */}
+      <Route element={<ProtectedRoute blockRoles={['admin', 'reviewer']} />}>
+        <Route element={<DashboardLayout />}>
           <Route path="/submission" element={<Submission />} />
           <Route path="/papers" element={<Papers />} />
           <Route path="/papers/:id" element={<PaperDetail />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/reviews/:id" element={<ReviewDetail />} />
         </Route>
       </Route>
 
       {/* 管理员页面 */}
       <Route element={<ProtectedRoute requiredRole="admin" />}>
         <Route element={<DashboardLayout admin />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/papers" element={<AdminPapers />} />
           <Route path="/admin/reviews" element={<AdminReviews />} />
+          <Route path="/admin/periods" element={<AdminPeriods />} />
         </Route>
       </Route>
     </Routes>

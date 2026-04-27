@@ -6,12 +6,16 @@ import type {
   SubmissionUpdateForm,
   Submission,
   SubmissionListItem,
+  SubmissionPeriodListItem,
   SubmissionFile,
   RebuttalForm,
   Rebuttal,
 } from './types'
 
 export const submissionService = {
+  listPeriods: () =>
+    apiClient.get<ApiResponse<SubmissionPeriodListItem[]>>('/api/v1/submissions/periods'),
+
   create: (data: SubmissionForm) =>
     apiClient.post<ApiResponse<Submission>>('/api/v1/submissions/', data),
 

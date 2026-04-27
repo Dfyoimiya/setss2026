@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Trash2, Upload, Send } from 'lucide-react'
-import { useCreateSubmission, useUploadFile, useSubmitSubmission } from '@/hooks/useSubmissionQuery'
-import { useAdminPeriods } from '@/hooks/useAdminQuery'
+import { useCreateSubmission, useUploadFile, useSubmitSubmission, usePeriods } from '@/hooks/useSubmissionQuery'
 import PageHeader from '@/components/PageHeader'
 import type { AuthorInfo } from '@/api/types'
 
@@ -23,7 +22,7 @@ const emptyForm = {
 
 export default function Submission() {
   const navigate = useNavigate()
-  const { data: periods } = useAdminPeriods()
+  const { data: periods } = usePeriods()
   const createMutation = useCreateSubmission()
   const uploadMutation = useUploadFile()
   const submitMutation = useSubmitSubmission()

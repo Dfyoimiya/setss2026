@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Download, Edit2, Trash2, Send } from 'lucide-react'
 import { useSubmission, useUpdateSubmission, useDeleteSubmission, useSubmitSubmission, useUploadFile } from '@/hooks/useSubmissionQuery'
+import { submissionService } from '@/api/submissionService'
 import PageHeader from '@/components/PageHeader'
 import { SUBMISSION_STATUS_MAP } from '@/api/types'
 import type { SubmissionUpdateForm } from '@/api/types'
@@ -77,6 +78,20 @@ export default function PaperDetail() {
     const file = e.target.files?.[0]
     if (!file || !id) return
     uploadMutation.mutate({ id, file })
+  }
+
+  const handleDownload = async (fileId: string, fileName: string) => {
+    try {
+      const res = await submissionService.downloadFile(id!, fileId)
+      const url = URL.createObjectURL(new Blob([res.data]))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // error handled by interceptor
+    }
   }
 
   return (
@@ -198,14 +213,12 @@ export default function PaperDetail() {
                     版本 {f.version} · {(f.file_size / 1024).toFixed(1)} KB · {f.uploaded_at ? new Date(f.uploaded_at).toLocaleString('zh-CN') : '-'}
                   </p>
                 </div>
-                <a
-                  href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/submissions/${id}/files/${f.id}/download`}
+                <button
+                  onClick={() => handleDownload(f.id, f.file_name)}
                   className="btn-accent-outline text-xs px-3 py-1.5"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   <Download className="w-3.5 h-3.5 mr-1" /> 下载
-                </a>
+                </button>
               </div>
             ))}
           </div>

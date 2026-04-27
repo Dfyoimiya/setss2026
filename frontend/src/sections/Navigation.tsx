@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useAuthStore } from '@/stores/authStore';
+import { isAdmin } from '@/api/types';
 
 interface NavChild {
   key: string;
@@ -17,6 +19,9 @@ interface NavItem {
 
 export default function Navigation() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const adminUser = isAdmin(user?.role);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,13 +38,15 @@ export default function Navigation() {
     },
     {
       key: 'authors',
-      href: '#authors',
+      href: '/submission',
       children: [
-        { key: 'setss2026Submission', href: '#registration' },
-        { key: 'paperSubmissionInstructions', href: '#registration' },
+        { key: 'submitPaper', href: '/submission' },
       ],
     },
-    { key: 'speakers', href: '#speakers' },
+    {
+      key: 'speakers',
+      href: '/courses',
+    },
     {
       key: 'program',
       href: '#schedule',
@@ -57,6 +64,12 @@ export default function Navigation() {
         { key: 'accommodation', href: '/accommodation' }, 
       ],
     },
+    ...(user ? [
+      { key: 'dashboard', href: '/dashboard' },
+    ] : []),
+    ...(adminUser ? [
+      { key: 'adminPanel', href: '/admin/dashboard' },
+    ] : []),
   ];
 
   const handleMouseEnter = (key: string) => {
@@ -76,6 +89,15 @@ export default function Navigation() {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     setActiveDropdown(null);
+  };
+
+  const handleParentClick = (item: NavItem) => {
+    setActiveDropdown(null);
+    if (item.href.startsWith('/')) {
+      navigate(item.href);
+    } else {
+      scrollToSection(item.href);
+    }
   };
 
   const renderChild = (child: NavChild) => {
@@ -134,7 +156,7 @@ export default function Navigation() {
                 onMouseLeave={handleMouseLeave}
               >
                 <button
-                  onClick={() => scrollToSection(item.href)}
+                  onClick={() => handleParentClick(item)}
                   className="nav-link-text relative flex items-center gap-1 px-4 py-3 text-[12px] font-bold tracking-wider text-white uppercase"
                 >
                   {t(item.key)}

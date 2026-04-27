@@ -363,6 +363,11 @@ export function isReviewer(role: string | undefined): boolean {
   return hasRole(role, 'admin') || hasRole(role, 'reviewer')
 }
 
+export function canSubmit(role: string | undefined): boolean {
+  if (!role) return true
+  return !hasRole(role, 'admin') && !hasRole(role, 'reviewer')
+}
+
 // ── 状态显示映射 ──
 
 export const SUBMISSION_STATUS_MAP: Record<SubmissionStatus, { label: string; color: string }> = {

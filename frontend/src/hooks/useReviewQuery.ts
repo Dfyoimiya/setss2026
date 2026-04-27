@@ -3,13 +3,14 @@ import { toast } from 'sonner'
 import { reviewService } from '@/api/reviewService'
 import type { AssignmentDecision, ReviewForm, ReviewUpdateForm } from '@/api/types'
 
-export function useMyReviews(page = 1, pageSize = 20) {
+export function useMyReviews(page = 1, pageSize = 20, enabled = true) {
   return useQuery({
     queryKey: ['reviews', 'mine', page, pageSize],
     queryFn: async () => {
       const res = await reviewService.listMyAssignments({ page, page_size: pageSize })
       return res.data
     },
+    enabled,
     staleTime: 2 * 60 * 1000,
   })
 }

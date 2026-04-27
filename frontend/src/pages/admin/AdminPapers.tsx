@@ -85,7 +85,7 @@ export default function AdminPapers() {
                           >
                             <Gavel className="w-3 h-3" /> 分配评审
                           </button>
-                          {s.status === 'submitted' && (
+                          {(s.status === 'submitted' || s.status === 'under_review' || s.status === 'review_completed') && (
                             <select
                               onChange={(e) => {
                                 if (e.target.value) handleDecision(s.id, e.target.value as AdminDecisionValue)
@@ -93,7 +93,7 @@ export default function AdminPapers() {
                               className="text-xs border border-[#E2E8F0] rounded-lg px-2 py-1"
                               defaultValue=""
                             >
-                              <option value="" disabled>决定...</option>
+                              <option value="" disabled>最终决定...</option>
                               {DECISIONS.map((d) => (
                                 <option key={d.value} value={d.value}>{d.label}</option>
                               ))}

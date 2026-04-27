@@ -1,32 +1,33 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, FileText, ScrollText, Users, Gavel, BarChart3,
+  LayoutDashboard, FileText, ScrollText, Users, Gavel, BarChart3, Clock,
   LogOut, Menu, X,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAuthStore } from '@/stores/authStore'
-import { isReviewer } from '@/api/types'
+import { isReviewer, canSubmit } from '@/api/types'
 
 interface NavItem {
   label: string
   href: string
   icon: React.ElementType
-  role?: 'admin' | 'reviewer'
+  role?: 'admin' | 'reviewer' | 'author'
   children?: NavItem[]
 }
 
 const userNavItems: NavItem[] = [
   { label: '仪表盘', href: '/dashboard', icon: LayoutDashboard },
-  { label: '提交论文', href: '/submission', icon: FileText },
-  { label: '我的论文', href: '/papers', icon: ScrollText },
+  { label: '提交论文', href: '/submission', icon: FileText, role: 'author' },
+  { label: '我的论文', href: '/papers', icon: ScrollText, role: 'author' },
   { label: '评审任务', href: '/reviews', icon: Gavel, role: 'reviewer' },
 ]
 
 const adminNavItems: NavItem[] = [
-  { label: '管理首页', href: '/admin', icon: LayoutDashboard },
-  { label: '用户管理', href: '/admin/users', icon: Users },
+  { label: '管理仪表盘', href: '/admin/dashboard', icon: LayoutDashboard },
+  { label: '用户与权限', href: '/admin/users', icon: Users },
   { label: '论文管理', href: '/admin/papers', icon: FileText },
-  { label: '评审进度', href: '/admin/reviews', icon: BarChart3 },
+  { label: '评审管理', href: '/admin/reviews', icon: BarChart3 },
+  { label: '投稿周期', href: '/admin/periods', icon: Clock },
 ]
 
 export default function DashboardLayout({ admin }: { admin?: boolean }) {
@@ -36,7 +37,11 @@ export default function DashboardLayout({ admin }: { admin?: boolean }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const items = admin ? adminNavItems : userNavItems.filter(
-    (i) => !i.role || (i.role === 'reviewer' && isReviewer(user?.role)),
+    (i) => {
+      if (i.role === 'reviewer' && !isReviewer(user?.role)) return false
+      if (i.role === 'author' && !canSubmit(user?.role)) return false
+      return true
+    },
   )
 
   const displayName = user?.full_name || user?.email?.split('@')[0] || '用户'

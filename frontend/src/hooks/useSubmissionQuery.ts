@@ -25,6 +25,17 @@ export function useSubmission(id: string | undefined) {
   })
 }
 
+export function usePeriods() {
+  return useQuery({
+    queryKey: ['submissions', 'periods'],
+    queryFn: async () => {
+      const res = await submissionService.listPeriods()
+      return res.data.data!
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
 export function useCreateSubmission() {
   const qc = useQueryClient()
 

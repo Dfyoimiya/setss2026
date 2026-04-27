@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Download, Send } from 'lucide-react'
 import { useReviewDetail, useSubmitReview, useUpdateReview } from '@/hooks/useReviewQuery'
+import { reviewService } from '@/api/reviewService'
 import PageHeader from '@/components/PageHeader'
 import { RECOMMENDATION_MAP } from '@/api/types'
 import type { ReviewRecommendation } from '@/api/types'
@@ -47,6 +48,20 @@ export default function ReviewDetail() {
     }
   }
 
+  const handleDownload = async () => {
+    try {
+      const res = await reviewService.downloadPaperFile(id!)
+      const url = URL.createObjectURL(new Blob([res.data]))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'anonymous_paper.pdf'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // error handled by interceptor
+    }
+  }
+
   return (
     <div className="max-w-3xl animate-fade-in-up">
       <PageHeader
@@ -86,14 +101,12 @@ export default function ReviewDetail() {
             </div>
             {assignment.submission.files.length > 0 && (
               <div>
-                <a
-                  href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/review/assignments/${id}/file/download`}
+                <button
+                  onClick={handleDownload}
                   className="btn-accent-outline text-xs px-3 py-1.5 inline-flex items-center"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   <Download className="w-3.5 h-3.5 mr-1" /> 下载论文 PDF
-                </a>
+                </button>
               </div>
             )}
           </div>

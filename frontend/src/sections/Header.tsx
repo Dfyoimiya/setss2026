@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { User, LogOut, Search, Globe } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { User, LogOut, Search, Globe, Shield, LayoutDashboard } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import type { AuthUser } from '@/hooks/useAuth';
 import AuthModal from '@/sections/AuthModal';
@@ -9,10 +10,11 @@ import { useGlobalSearch, highlightMatches } from '@/hooks/useGlobalSearch';
 
 interface HeaderProps {
   user: AuthUser | null;
+  isAdmin?: boolean;
   logout: () => void;
 }
 
-export default function Header({ user, logout }: HeaderProps) {
+export default function Header({ user, isAdmin, logout }: HeaderProps) {
   const { lang, t, toggleLang } = useLanguage();
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -189,18 +191,36 @@ export default function Header({ user, logout }: HeaderProps) {
 
               {/* Auth */}
               {user ? (
-                <div className="flex items-center gap-2 ml-2">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
-                    <User className="w-4 h-4 text-slate-500" />
-                  </div>
-                  <span className="text-[12px] text-slate-700 hidden sm:inline">{user.name}</span>
-                  <button
-                    onClick={logout}
-                    className="p-1.5 text-slate-400 hover:text-red-500 transition-colors"
-                    title={t('logout')}
+                <div className="flex items-center gap-3 ml-2">
+                  {isAdmin && (
+                    <Link
+                      to="/admin/dashboard"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold text-[#00629B] bg-[#00629B]/10 hover:bg-[#00629B]/20 rounded-md transition-colors"
+                    >
+                      <Shield className="w-3.5 h-3.5" />
+                      {t('adminPanel')}
+                    </Link>
+                  )}
+                  <Link
+                    to="/dashboard"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium text-slate-600 hover:text-[#00629B] hover:bg-slate-50 rounded-md transition-colors"
                   >
-                    <LogOut className="w-3.5 h-3.5" />
-                  </button>
+                    <LayoutDashboard className="w-3.5 h-3.5" />
+                    {t('dashboard')}
+                  </Link>
+                  <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                      <User className="w-4 h-4 text-slate-500" />
+                    </div>
+                    <span className="text-[12px] text-slate-700 hidden sm:inline">{user.name}</span>
+                    <button
+                      onClick={logout}
+                      className="p-1.5 text-slate-400 hover:text-red-500 transition-colors"
+                      title={t('logout')}
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-[12px] ml-2">

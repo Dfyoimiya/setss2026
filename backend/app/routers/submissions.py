@@ -1,3 +1,4 @@
+import io
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
@@ -86,6 +87,25 @@ def _build_submission_response(db: Session, submission: Submission) -> Submissio
         "files": file_responses,
     }
     return SubmissionResponse.model_validate(data)
+
+
+@router.get("/periods", response_model=ApiResponse)
+def list_periods(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    periods = crud_period.get_multi(db)
+    data = [
+        {
+            "id": p.id,
+            "name": p.name,
+            "start_date": p.start_date,
+            "end_date": p.end_date,
+            "is_active": p.is_active,
+        }
+        for p in periods
+    ]
+    return ok(data=data)
 
 
 @router.post("", response_model=ApiResponse, status_code=201)
@@ -228,7 +248,7 @@ def upload_file(
     if submission.status not in ("draft", "minor_revision", "major_revision"):
         raise PeriodClosedError("Cannot upload files for this submission status")
 
-    if file.content_type != "application/pdf":
+    if file.content_type and file.content_type != "application/pdf" and not file.content_type.startswith("multipart/"):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
 
     storage = get_storage_service()
@@ -238,7 +258,7 @@ def upload_file(
     file_data = file.file.read()
     storage.upload_file(
         object_name=object_name,
-        data=file.file,
+        data=io.BytesIO(file_data),
         length=len(file_data),
         content_type="application/pdf",
     )

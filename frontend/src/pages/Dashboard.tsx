@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FileText, ScrollText, Gavel, UserCircle, Shield } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
-import { isAdmin, isReviewer } from '@/api/types'
+import { isAdmin, isReviewer, canSubmit } from '@/api/types'
 import { useCurrentUser } from '@/hooks/useAuthQuery'
 import { useSubmissions } from '@/hooks/useSubmissionQuery'
 import { useMyReviews } from '@/hooks/useReviewQuery'
@@ -12,20 +12,22 @@ export default function Dashboard() {
   const { user } = useAuthStore()
   useCurrentUser()
   const { data: subsData } = useSubmissions(1, 5)
-  const { data: reviewsData } = useMyReviews(1, 5)
+  const { data: reviewsData } = useMyReviews(1, 5, isReviewer(user?.role))
 
   const displayName = user?.full_name || user?.email?.split('@')[0] || '用户'
   const submissions = subsData?.data || []
   const reviews = reviewsData?.data || []
 
   const quickLinks = [
-    { label: '提交论文', href: '/submission', icon: FileText, desc: '提交新论文稿件' },
-    { label: '我的论文', href: '/papers', icon: ScrollText, desc: '查看已提交论文' },
+    ...(canSubmit(user?.role) ? [
+      { label: '提交论文', href: '/submission', icon: FileText, desc: '提交新论文稿件' },
+      { label: '我的论文', href: '/papers', icon: ScrollText, desc: '查看已提交论文' },
+    ] : []),
     ...(isReviewer(user?.role) ? [
       { label: '评审任务', href: '/reviews', icon: Gavel, desc: '查看分配到我的评审' },
     ] : []),
     ...(isAdmin(user?.role) ? [
-      { label: '管理后台', href: '/admin/users', icon: Shield, desc: '系统管理' },
+      { label: '管理后台', href: '/admin/dashboard', icon: Shield, desc: '系统管理' },
     ] : []),
     { label: '个人信息', href: '#', icon: UserCircle, desc: '管理账户信息' },
   ]

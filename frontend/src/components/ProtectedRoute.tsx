@@ -4,9 +4,10 @@ import { hasRole } from '@/api/types'
 
 interface ProtectedRouteProps {
   requiredRole?: 'admin' | 'organizer' | 'reviewer' | 'user'
+  blockRoles?: string[]
 }
 
-export default function ProtectedRoute({ requiredRole }: ProtectedRouteProps) {
+export default function ProtectedRoute({ requiredRole, blockRoles }: ProtectedRouteProps) {
   const { isAuthenticated, user } = useAuthStore()
 
   if (!isAuthenticated) {
@@ -23,6 +24,14 @@ export default function ProtectedRoute({ requiredRole }: ProtectedRouteProps) {
 
   if (requiredRole === 'reviewer' && !hasRole(user?.role, 'reviewer') && !hasRole(user?.role, 'admin')) {
     return <Navigate to="/dashboard" replace />
+  }
+
+  if (blockRoles && user?.role) {
+    for (const blocked of blockRoles) {
+      if (hasRole(user.role, blocked)) {
+        return <Navigate to="/dashboard" replace />
+      }
+    }
   }
 
   return <Outlet />

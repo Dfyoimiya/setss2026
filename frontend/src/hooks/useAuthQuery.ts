@@ -9,15 +9,17 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       const { access_token } = res.data.data!
-      setAuth(access_token, {} as Parameters<typeof setAuth>[1])
-      // 登录成功后立即获取用户信息
-      authService.getMe().then((meRes) => {
+      try {
+        const meRes = await authService.getMe()
         const user = meRes.data.data!
         setAuth(access_token, user)
-      })
-      toast.success('登录成功')
+        toast.success('登录成功')
+      } catch {
+        setAuth(access_token, {} as Parameters<typeof setAuth>[1])
+        toast.success('登录成功')
+      }
     },
     onError: () => {
       // 拦截器已处理 toast，此处仅清理状态
