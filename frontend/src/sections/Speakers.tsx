@@ -47,11 +47,11 @@ export default function Speakers() {
     <section id="speakers" ref={sectionRef} className="bg-slate-50 py-16 sm:py-24">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="animate-in text-[11px] font-bold tracking-[0.2em] text-[#005C99] uppercase mb-2">
+          <p className="animate-in text-[11px] font-bold tracking-[0.2em] text-[#00629B] uppercase mb-2">
             {t('speakersSubtitle')}
           </p>
           <h2 className="section-title">{t('invitedSpeakers')}</h2>
-          <div className="w-12 h-1 bg-[#005C99] mx-auto mt-4" />
+          <div className="w-12 h-1 bg-[#00629B] mx-auto mt-4" />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">

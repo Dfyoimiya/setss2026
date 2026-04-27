@@ -57,7 +57,7 @@ export default function Countdown() {
   const units: (keyof TimeLeft)[] = ['days', 'hours', 'minutes', 'seconds'];
 
   return (
-    <section id="countdown" ref={sectionRef} className="relative bg-[#005C99] overflow-hidden">
+    <section id="countdown" ref={sectionRef} className="relative bg-[#00629B] overflow-hidden">
       {/* 细微背景纹理 */}
       <div className="absolute inset-0 opacity-[0.03]">
         <svg width="100%" height="100%">

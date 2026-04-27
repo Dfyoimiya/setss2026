@@ -32,13 +32,13 @@ export default function Registration() {
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
           {/* Left: Registration CTA */}
           <div>
-            <p className="reg-animate text-[11px] font-bold tracking-[0.2em] text-[#005C99] uppercase mb-2">
+            <p className="reg-animate text-[11px] font-bold tracking-[0.2em] text-[#00629B] uppercase mb-2">
               {t('joinUs')}
             </p>
             <h2 className="reg-animate section-title mb-4">
               {t('registrationOpen')}
             </h2>
-            <div className="reg-animate w-12 h-1 bg-[#005C99] mb-6" />
+            <div className="reg-animate w-12 h-1 bg-[#00629B] mb-6" />
 
             <p className="reg-animate text-[14px] text-slate-600 leading-relaxed mb-4">
               {t('regDesc1')}
@@ -70,7 +70,7 @@ export default function Registration() {
 
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#005C99] mt-0.5 flex-shrink-0" />
+                <MapPin className="w-4 h-4 text-[#00629B] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-[13px] font-medium text-slate-700">{t('addressLabel')}</p>
                   <p className="text-[12px] text-slate-500 mt-0.5 whitespace-pre-line">
@@ -80,7 +80,7 @@ export default function Registration() {
               </div>
 
               <div className="flex items-start gap-3">
-                <Mail className="w-4 h-4 text-[#005C99] mt-0.5 flex-shrink-0" />
+                <Mail className="w-4 h-4 text-[#00629B] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-[13px] font-medium text-slate-700">{t('emailLabel')}</p>
                   <p className="text-[12px] text-slate-500 mt-0.5">liubocq@swu.edu.cn</p>
@@ -88,14 +88,14 @@ export default function Registration() {
               </div>
 
               <div className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-[#005C99] mt-0.5 flex-shrink-0" />
+                <Phone className="w-4 h-4 text-[#00629B] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-[13px] font-medium text-slate-700">{t('websiteLabel')}</p>
                   <a
                     href="https://www.rise-swu.cn/SETSS2026"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[12px] text-[#005C99] hover:underline mt-0.5 inline-block"
+                    className="text-[12px] text-[#00629B] hover:underline mt-0.5 inline-block"
                   >
                     https://www.rise-swu.cn/SETSS2026
                   </a>

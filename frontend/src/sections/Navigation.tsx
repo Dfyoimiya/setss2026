@@ -80,7 +80,7 @@ export default function Navigation() {
 
   const renderChild = (child: NavChild) => {
     const className =
-      'progress-bar-hover block w-full text-left px-5 py-2.5 text-[12px] text-slate-600 hover:text-[#005C99] hover:bg-slate-50 transition-colors';
+      'progress-bar-hover block w-full text-left px-5 py-2.5 text-[12px] text-slate-600 hover:text-[#00629B] hover:bg-slate-50 transition-colors';
 
     if (child.external || child.href.startsWith('http')) {
       return (
@@ -122,7 +122,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="bg-[#005C99] relative z-[55]">
+    <nav className="bg-[#00629B] relative z-[55]">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-11">
           <ul className="flex items-center gap-0">

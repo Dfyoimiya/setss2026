@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { User, LogOut, Search, Globe } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
-import type { User as AuthUser } from '@/hooks/useAuth';
+import type { AuthUser } from '@/hooks/useAuth';
 import AuthModal from '@/sections/AuthModal';
 
 // 引入你编写的搜索钩子与高亮函数 (请根据你的实际目录结构调整路径)
@@ -9,11 +9,10 @@ import { useGlobalSearch, highlightMatches } from '@/hooks/useGlobalSearch';
 
 interface HeaderProps {
   user: AuthUser | null;
-  login: (name: string, email: string) => void;
   logout: () => void;
 }
 
-export default function Header({ user, login, logout }: HeaderProps) {
+export default function Header({ user, logout }: HeaderProps) {
   const { lang, t, toggleLang } = useLanguage();
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -27,10 +26,12 @@ export default function Header({ user, login, logout }: HeaderProps) {
   // 实时计算当前查询的结果
   const searchResults = search(searchQuery);
 
-  const openAuth = (mode: 'login' | 'register') => {
-    setAuthMode(mode);
-    setShowAuth(true);
-  };
+  const handleOpenAuth = (mode: 'login' | 'register') => {
+    setAuthMode(mode)
+    setShowAuth(true)
+  }
+
+  const handleLoginSuccess = () => setShowAuth(false);
 
   // 处理搜索输入变化
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +60,7 @@ export default function Header({ user, login, logout }: HeaderProps) {
     return parts.map((part, i) => {
       if (part.startsWith('<<HL>>') && part.endsWith('<</HL>>')) {
         return (
-          <span key={i} className="text-[#005C99] font-bold bg-blue-50/80 rounded-sm px-0.5">
+          <span key={i} className="text-[#00629B] font-bold bg-blue-50/80 rounded-sm px-0.5">
             {part.slice(6, -7)}
           </span>
         );
@@ -100,7 +101,7 @@ export default function Header({ user, login, logout }: HeaderProps) {
               {/* Language Toggle */}
               <button
                 onClick={toggleLang}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-slate-600 hover:text-[#005C99] transition-colors border border-slate-200 rounded-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-slate-600 hover:text-[#00629B] transition-colors border border-slate-200 rounded-sm"
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span>{lang === 'en' ? 'EN' : '中文'}</span>
@@ -123,7 +124,7 @@ export default function Header({ user, login, logout }: HeaderProps) {
                       }}
                       placeholder={t('search') || 'Search...'}
                       autoFocus
-                      className="w-64 bg-white border border-slate-300 rounded-sm px-3 py-1.5 text-[12px] text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[#005C99]"
+                      className="w-64 bg-white border border-slate-300 rounded-sm px-3 py-1.5 text-[12px] text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-[#00629B]"
                     />
                     
                     {/* 下拉搜索结果浮窗 */}
@@ -179,7 +180,7 @@ export default function Header({ user, login, logout }: HeaderProps) {
                 ) : (
                   <button
                     onClick={() => setShowSearch(true)}
-                    className="p-2 text-slate-500 hover:text-[#005C99] transition-colors"
+                    className="p-2 text-slate-500 hover:text-[#00629B] transition-colors"
                   >
                     <Search className="w-4 h-4" />
                   </button>
@@ -204,15 +205,15 @@ export default function Header({ user, login, logout }: HeaderProps) {
               ) : (
                 <div className="flex items-center gap-2 text-[12px] ml-2">
                   <button
-                    onClick={() => openAuth('login')}
-                    className="text-slate-600 hover:text-[#005C99] transition-colors font-medium"
+                    onClick={() => handleOpenAuth('login')}
+                    className="text-slate-600 hover:text-[#00629B] transition-colors font-medium"
                   >
                     {t('login')}
                   </button>
                   <span className="text-slate-300">|</span>
                   <button
-                    onClick={() => openAuth('register')}
-                    className="text-slate-600 hover:text-[#005C99] transition-colors font-medium"
+                    onClick={() => handleOpenAuth('register')}
+                    className="text-slate-600 hover:text-[#00629B] transition-colors font-medium"
                   >
                     {t('register')}
                   </button>
@@ -228,7 +229,7 @@ export default function Header({ user, login, logout }: HeaderProps) {
         onClose={() => setShowAuth(false)}
         mode={authMode}
         setMode={setAuthMode}
-        onLogin={login}
+        onLogin={handleLoginSuccess}
       />
     </>
   );

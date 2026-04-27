@@ -10,7 +10,6 @@ import {
   Car,
   Clock,
   Wallet,
-  MapPin,
   Navigation,
   Footprints,
   ArrowRight,

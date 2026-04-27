@@ -16,7 +16,7 @@ import Footer from '@/sections/Footer';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <div className="relative bg-white">
-      <Header user={user} login={login} logout={logout} />
+      <Header user={user} logout={logout} />
       <Navigation />
 
       <main>

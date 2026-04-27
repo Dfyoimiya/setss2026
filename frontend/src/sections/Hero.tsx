@@ -75,7 +75,7 @@ export default function Hero() {
           </p>
 
           {/* Horizontal Lines */}
-          <div className="w-16 h-[3px] bg-[#005C99] mx-auto mb-6" />
+          <div className="w-16 h-[3px] bg-[#00629B] mx-auto mb-6" />
 
           {/* Main Title */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-4">

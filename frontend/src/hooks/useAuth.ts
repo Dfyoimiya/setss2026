@@ -1,29 +1,41 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react'
+import { useAuthStore } from '@/stores/authStore'
+import type { User } from '@/api/types'
 
-export interface User {
-  name: string;
-  email: string;
-  avatar?: string;
+export interface AuthUser {
+  name: string
+  email: string
+  avatar?: string
+}
+
+function toAuthUser(u: User | null): AuthUser | null {
+  if (!u) return null
+  return {
+    name: u.full_name || u.email.split('@')[0],
+    email: u.email,
+  }
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const { user, isAuthenticated, logout: storeLogout } = useAuthStore()
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
 
-  const login = useCallback((name: string, email: string) => {
-    setUser({ name, email });
-    setShowAuthModal(false);
-  }, []);
+  const openAuth = (mode: 'login' | 'register') => {
+    setAuthMode(mode)
+    setShowAuthModal(true)
+  }
 
-  const logout = useCallback(() => {
-    setUser(null);
-  }, []);
+  const closeAuth = () => setShowAuthModal(false)
 
-  const openAuth = useCallback((mode: 'login' | 'register') => {
-    setAuthMode(mode);
-    setShowAuthModal(true);
-  }, []);
-
-  return { user, login, logout, showAuthModal, setShowAuthModal, authMode, openAuth };
+  return {
+    user: toAuthUser(user),
+    rawUser: user,
+    isAuthenticated,
+    logout: storeLogout,
+    showAuthModal,
+    setShowAuthModal: closeAuth,
+    authMode,
+    openAuth,
+  }
 }
