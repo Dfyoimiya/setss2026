@@ -15,34 +15,48 @@ export default function Courses() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const speakerParam = searchParams.get('speaker');
-    if (!speakerParam) return;
-
-    const speakerId = parseInt(speakerParam, 10);
-    if (isNaN(speakerId)) return;
-
-    const targetCourse = coursesData.find((c) => c.id === speakerId);
-    if (!targetCourse) return;
-
-    let attempts = 0;
-    const maxAttempts = 10;
-    const tryScroll = () => {
-      const el = sectionRefs.current[targetCourse.name];
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        el.classList.add('ring-2', 'ring-[#b8860b]', 'ring-offset-4', 'rounded');
-        setTimeout(() => {
-          el.classList.remove('ring-2', 'ring-[#b8860b]', 'ring-offset-4', 'rounded');
-        }, 2500);
-      } else if (attempts < maxAttempts) {
-        attempts++;
-        setTimeout(tryScroll, 150);
-      }
+    const doHighlight = (el: HTMLElement) => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.classList.add('ring-2', 'ring-[#b8860b]', 'ring-offset-4');
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-[#b8860b]', 'ring-offset-4');
+      }, 2500);
     };
-    setTimeout(tryScroll, 100);
+
+    const speakerParam = searchParams.get('speaker');
+    if (speakerParam) {
+      const speakerId = parseInt(speakerParam, 10);
+      if (!isNaN(speakerId)) {
+        const targetCourse = coursesData.find((c) => c.id === speakerId);
+        if (targetCourse) {
+          let attempts = 0;
+          const maxAttempts = 10;
+          const tryScroll = () => {
+            const el = sectionRefs.current[targetCourse.name];
+            if (el) {
+              doHighlight(el);
+            } else if (attempts < maxAttempts) {
+              attempts++;
+              setTimeout(tryScroll, 150);
+            }
+          };
+          setTimeout(tryScroll, 100);
+        }
+      }
+    }
+
+    const scrollTo = searchParams.get('scrollTo');
+    if (scrollTo && scrollTo.startsWith('speaker-')) {
+      const idx = parseInt(scrollTo.split('-')[1], 10);
+      if (idx >= 0 && idx < coursesData.length) {
+        setTimeout(() => {
+          const el = document.getElementById(`speaker-${idx}`);
+          if (el) doHighlight(el);
+        }, 300);
+      }
+    }
   }, [searchParams, coursesData]);
 
-  const getSpeakerId = (name: string) => name.replace(/\s+/g, '-');
 
   return (
     <div className="min-h-screen bg-[#faf9f6]">
@@ -83,31 +97,37 @@ export default function Courses() {
         <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#faf9f6]" />
       </div>
 
-      {/* Quick nav */}
-      <div className="bg-white border-b border-[#e8e4df]">
-        <div className="max-w-[1000px] mx-auto px-4 py-4 flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-bold text-[#8a8680] uppercase tracking-[0.15em] mr-2">
-            {t('coursesQuickNav')}
-          </span>
-          {coursesData.map((course, idx) => (
-            <a
-              key={course.name}
-              href={`#${getSpeakerId(course.name)}`}
-              onClick={(e) => {
-                e.preventDefault();
-                const el = sectionRefs.current[course.name];
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className="text-[11px] px-2.5 py-1 rounded-md border border-[#e8e4df] text-[#5c5a56] hover:bg-[#1a365d] hover:text-white hover:border-[#1a365d] transition-colors"
-            >
-              {String(idx + 1)}. {course.name.split('Prof. ').pop()?.split(',')[0]}
-            </a>
-          ))}
-        </div>
-      </div>
+      {/* Sidebar layout */}
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex gap-8">
+          {/* Sidebar nav */}
+          <aside className="hidden lg:block w-56 flex-shrink-0">
+            <div className="sticky top-20 pt-12">
+              <p className="text-[10px] font-bold text-[#8a8680] uppercase tracking-[0.15em] mb-4">
+                {t('coursesQuickNav')}
+              </p>
+              <nav className="space-y-0.5">
+                {coursesData.map((course, idx) => (
+                  <a
+                    key={course.name}
+                    href={`#speaker-${idx}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById(`speaker-${idx}`);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] text-[#5c5a56] hover:bg-[#f5f2ed] hover:text-[#1a365d] transition-colors group"
+                  >
+                    <span className="text-[10px] font-bold text-[#b8860b] font-mono w-4 flex-shrink-0">{String(idx + 1).padStart(2, '0')}</span>
+                    <span className="font-medium leading-snug truncate">{course.name}</span>
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </aside>
 
-      {/* Speaker list */}
-      <main className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          {/* Main content */}
+          <main className="flex-1 min-w-0 py-12 sm:py-16">
         <div className="space-y-10">
           {coursesData.map((course, idx) => {
             const isTuring = course.name.includes('Turing') || course.name.includes('图灵');
@@ -118,7 +138,7 @@ export default function Courses() {
               <div
                 key={course.name}
                 ref={(el) => { sectionRefs.current[course.name] = el; }}
-                id={getSpeakerId(course.name)}
+                id={`speaker-${idx}`}
                 className="scroll-mt-20 bg-white border border-[#e8e4df] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
               >
                 <div className="p-5 sm:p-6">
@@ -180,19 +200,13 @@ export default function Courses() {
                         </p>
                       </div>
 
-                      {/* Tabs: Bio / Abstract */}
-                      <details className="group" open={idx === 0}>
-                        <summary className="flex items-center gap-4 cursor-pointer py-2 text-[13px] font-semibold text-[#1a365d] hover:text-[#b8860b] transition-colors select-none">
-                          <span className="flex items-center gap-1.5">
-                            {t('coursesTabBio')}
-                          </span>
-                          <span className="text-[10px] text-[#8a8680]">|</span>
-                          <span className="flex items-center gap-1.5">
-                            {t('coursesTabAbstract')}
-                          </span>
-                          <span className="text-[10px] text-[#8a8680] ml-auto group-open:hidden">展开</span>
-                          <span className="text-[10px] text-[#8a8680] ml-auto hidden group-open:inline">收起</span>
-                        </summary>
+                      {/* Bio / Abstract */}
+                      <div className="py-2">
+                        <span className="text-[13px] font-semibold text-[#1a365d]">
+                          {t('coursesTabBio')}
+                          <span className="text-[10px] text-[#8a8680] mx-1.5">|</span>
+                          {t('coursesTabAbstract')}
+                        </span>
                         <div className="mt-2 space-y-3">
                           <p className="text-[13px] text-[#4a4844] leading-[1.8]">
                             {course.bio}
@@ -203,7 +217,7 @@ export default function Courses() {
                             </p>
                           </div>
                         </div>
-                      </details>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -211,7 +225,9 @@ export default function Courses() {
             );
           })}
         </div>
-      </main>
+        </main>
+        </div>
+      </div>
 
       {/* Footer */}
       <footer className="bg-[#1a365d] py-10">

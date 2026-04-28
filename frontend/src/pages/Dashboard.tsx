@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
-import { FileText, ScrollText, Gavel, UserCircle, Shield } from 'lucide-react'
+import { FileText, ScrollText, Gavel, UserCircle, Shield, Loader2 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { isAdmin, isReviewer, canSubmit } from '@/api/types'
-import { useCurrentUser } from '@/hooks/useAuthQuery'
+import { useCurrentUser, useUpdateProfile } from '@/hooks/useAuthQuery'
 import { useSubmissions } from '@/hooks/useSubmissionQuery'
 import { useMyReviews } from '@/hooks/useReviewQuery'
 import PageHeader from '@/components/PageHeader'
 import { SUBMISSION_STATUS_MAP, ASSIGNMENT_STATUS_MAP } from '@/api/types'
+import { useState } from 'react'
 
 export default function Dashboard() {
   const { user } = useAuthStore()
@@ -17,6 +18,21 @@ export default function Dashboard() {
   const displayName = user?.full_name || user?.email?.split('@')[0] || '用户'
   const submissions = subsData?.data || []
   const reviews = reviewsData?.data || []
+  const [editingProfile, setEditingProfile] = useState(false)
+  const [profileName, setProfileName] = useState('')
+  const [profileInstitution, setProfileInstitution] = useState('')
+  const updateProfile = useUpdateProfile()
+
+  const startEditProfile = () => {
+    setProfileName(user?.full_name || '')
+    setProfileInstitution(user?.institution || '')
+    setEditingProfile(true)
+  }
+
+  const saveProfile = async () => {
+    await updateProfile.mutateAsync({ full_name: profileName, institution: profileInstitution })
+    setEditingProfile(false)
+  }
 
   const quickLinks = [
     ...(canSubmit(user?.role) ? [
@@ -29,7 +45,7 @@ export default function Dashboard() {
     ...(isAdmin(user?.role) ? [
       { label: '管理后台', href: '/admin/dashboard', icon: Shield, desc: '系统管理' },
     ] : []),
-    { label: '个人信息', href: '#', icon: UserCircle, desc: '管理账户信息' },
+    { label: '个人信息', href: '#', icon: UserCircle, desc: '管理账户信息', onClick: () => startEditProfile() },
   ]
 
   return (
@@ -42,15 +58,51 @@ export default function Dashboard() {
         <p className="text-sm text-[#64748B] mt-1">{user?.email}</p>
       </div>
 
+      {/* 个人信息编辑 */}
+      {editingProfile && (
+        <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 mb-6">
+          <h2 className="text-base font-semibold text-[#1E293B] mb-4">编辑个人信息</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-[#64748B] mb-1">邮箱</label>
+              <input type="email" value={user?.email || ''} disabled className="w-full px-3 py-2 border border-[#E2E8F0] rounded-lg text-sm text-[#94A3B8] bg-[#F8FAFC]" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#64748B] mb-1">姓名</label>
+              <input type="text" value={profileName} onChange={(e) => setProfileName(e.target.value)} placeholder="您的姓名" className="w-full px-3 py-2 border border-[#E2E8F0] rounded-lg text-sm text-[#1E293B] focus:outline-none focus:border-[#00629B]" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#64748B] mb-1">机构</label>
+              <input type="text" value={profileInstitution} onChange={(e) => setProfileInstitution(e.target.value)} placeholder="您的机构" className="w-full px-3 py-2 border border-[#E2E8F0] rounded-lg text-sm text-[#1E293B] focus:outline-none focus:border-[#00629B]" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#64748B] mb-1">角色</label>
+              <p className="text-sm text-[#64748B]">{user?.role}</p>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button onClick={saveProfile} disabled={updateProfile.isPending} className="px-4 py-2 bg-[#00629B] text-white text-sm rounded-lg hover:bg-[#004B7A] transition-colors disabled:opacity-60 flex items-center gap-2">
+                {updateProfile.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                保存
+              </button>
+              <button onClick={() => setEditingProfile(false)} className="px-4 py-2 border border-[#E2E8F0] text-sm rounded-lg text-[#64748B] hover:bg-[#F8FAFC] transition-colors">取消</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 快捷入口 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {quickLinks.map((link) => {
           const Icon = link.icon
+          const Component = 'onClick' in link ? 'button' : Link
+          const props: Record<string, unknown> = 'onClick' in link
+            ? { onClick: link.onClick }
+            : { to: link.href }
           return (
-            <Link
+            <Component
               key={link.label}
-              to={link.href}
-              className="card-standard flex items-start gap-4"
+              {...props as any}
+              className="card-standard flex items-start gap-4 w-full text-left"
             >
               <div className="w-10 h-10 rounded-lg bg-[#00629B]/10 flex items-center justify-center flex-shrink-0">
                 <Icon className="w-5 h-5 text-[#00629B]" />
@@ -59,7 +111,7 @@ export default function Dashboard() {
                 <p className="text-sm font-medium text-[#1E293B]">{link.label}</p>
                 <p className="text-xs text-[#64748B] mt-0.5">{link.desc}</p>
               </div>
-            </Link>
+            </Component>
           )
         })}
       </div>

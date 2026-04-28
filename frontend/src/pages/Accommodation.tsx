@@ -139,50 +139,28 @@ export default function Accommodation() {
       </div>
 
       {/* Hero 标题区域 */}
-      <div className="relative bg-[#1a365d] overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <svg width="100%" height="100%">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#b8860b]/10 rounded-full -translate-y-1/3 translate-x-1/4 blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-white/5 rounded-full translate-y-1/3 -translate-x-1/4 blur-2xl" />
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#b8860b]" />
+      <div className="bg-[#1a365d] relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#b8860b]" />
 
-        <div className="relative max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 sm:pt-28 sm:pb-32 text-center">
-          <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8">
-            <Hotel className="w-4 h-4 text-[#b8860b]" />
-            <span className="text-[12px] font-semibold text-white/90 tracking-[0.15em] uppercase">
-              {txt('Accommodation', '住宿推荐')}
+        <div className="relative max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 rounded-full mb-6">
+            <Hotel className="w-3.5 h-3.5 text-[#b8860b]" />
+            <span className="text-[11px] font-semibold text-white/80 uppercase tracking-[0.15em]">
+              {t('accommodationBadge') || txt('Accommodation', '住宿推荐')}
             </span>
           </div>
 
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-[3.5rem] font-bold text-white tracking-tight leading-[1.15] mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
             {t('accommodationTitle') || 'Accommodation'}
           </h1>
 
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="w-16 h-[1px] bg-[#b8860b]/60" />
-            <div className="w-1.5 h-1.5 bg-[#b8860b] rotate-45" />
-            <div className="w-16 h-[1px] bg-[#b8860b]/60" />
-          </div>
-
-          <p className="max-w-[650px] mx-auto text-[15px] text-white/70 leading-[1.8] font-light">
+          <p className="max-w-[650px] mx-auto text-[14px] text-white/60 leading-relaxed">
             {t('accommodationSubtitle') ||
               'The following hotels are all located near Southwest University within walking distance to the venue. Early booking is recommended.'}
           </p>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto block">
-            <path d="M0 80L48 74.7C96 69 192 59 288 53.3C384 48 480 48 576 52C672 56 768 64 864 66.7C960 69 1056 67 1152 61.3C1248 56 1344 48 1392 44L1440 40V80H1392C1344 80 1248 80 1152 80C1056 80 960 80 864 80C768 80 672 80 576 80C480 80 384 80 288 80C192 80 96 80 48 80H0Z" fill="#faf9f6" />
-          </svg>
-        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#faf9f6]" />
       </div>
 
       {/* 酒店选择器 */}

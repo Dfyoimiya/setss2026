@@ -145,8 +145,9 @@ export default function Header({ user, isAdmin, logout }: HeaderProps) {
                                   goToResult(res);
                                   setSearchQuery('');
                                   setShowSearch(false);
+                                  setHasPressedEnter(false);
                                 }}
-                                className="p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors"
+                                className={`p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors ${hasPressedEnter && index === 0 ? 'bg-blue-50/60 ring-1 ring-[#00629B]/30' : ''}`}
                               >
                                 <div className="flex items-center justify-between mb-1.5">
                                   <span className="text-[13px] font-semibold text-slate-800 line-clamp-1">

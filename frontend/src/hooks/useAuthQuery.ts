@@ -16,9 +16,11 @@ export function useLogin() {
         const user = meRes.data.data!
         setAuth(access_token, user)
         toast.success('登录成功')
+        window.location.reload()
       } catch {
         setAuth(access_token, {} as Parameters<typeof setAuth>[1])
         toast.success('登录成功')
+        window.location.reload()
       }
     },
     onError: () => {

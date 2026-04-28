@@ -63,6 +63,17 @@ export default function DashboardLayout({ admin }: { admin?: boolean }) {
           </div>
           <p className="mt-2 text-sm font-medium text-[#1E293B]">{displayName}</p>
           <p className="text-xs text-[#64748B]">{user?.email}</p>
+          {user?.institution && (
+            <p className="text-xs text-[#94A3B8] mt-1">{user.institution}</p>
+          )}
+          {user?.role && (
+            <span className="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#00629B]/10 text-[#00629B]">
+              {user.role.split(',').map((r: string) => {
+                const map: Record<string, string> = { admin: '管理员', organizer: '组织者', reviewer: '审稿人', author: '作者' }
+                return map[r.trim()] || r.trim()
+              }).join(' · ')}
+            </span>
+          )}
         </div>
       </div>
       <nav className="p-3 flex-1">
