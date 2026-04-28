@@ -2,8 +2,6 @@ import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useAuthStore } from '@/stores/authStore';
-import { isAdmin } from '@/api/types';
 
 interface NavChild {
   key: string;
@@ -20,8 +18,6 @@ interface NavItem {
 export default function Navigation() {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { user } = useAuthStore();
-  const adminUser = isAdmin(user?.role);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -64,12 +60,6 @@ export default function Navigation() {
         { key: 'accommodation', href: '/accommodation' }, 
       ],
     },
-    ...(user ? [
-      { key: 'dashboard', href: '/dashboard' },
-    ] : []),
-    ...(adminUser ? [
-      { key: 'adminPanel', href: '/admin/dashboard' },
-    ] : []),
   ];
 
   const handleMouseEnter = (key: string) => {
