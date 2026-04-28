@@ -248,7 +248,11 @@ def upload_file(
     if submission.status not in ("draft", "minor_revision", "major_revision"):
         raise PeriodClosedError("Cannot upload files for this submission status")
 
-    if file.content_type and file.content_type != "application/pdf" and not file.content_type.startswith("multipart/"):
+    if (
+        file.content_type
+        and file.content_type != "application/pdf"
+        and not file.content_type.startswith("multipart/")
+    ):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
 
     storage = get_storage_service()

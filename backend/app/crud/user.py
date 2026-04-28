@@ -54,7 +54,10 @@ def change_password(db: Session, user: User, old_password: str, new_password: st
 
 
 def get_users_paginated(
-    db: Session, skip: int = 0, limit: int = 20, keyword: str = "",
+    db: Session,
+    skip: int = 0,
+    limit: int = 20,
+    keyword: str = "",
 ) -> tuple[list[User], int]:
     q = db.query(User)
     if keyword:

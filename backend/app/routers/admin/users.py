@@ -21,7 +21,10 @@ def list_users(
 ):
     skip = (page - 1) * page_size
     users, total = crud_user.get_users_paginated(
-        db, skip=skip, limit=page_size, keyword=keyword,
+        db,
+        skip=skip,
+        limit=page_size,
+        keyword=keyword,
     )
     user_data = [UserResponse.model_validate(u) for u in users]
     return PagedApiResponse.paged(data=user_data, page=page, page_size=page_size, total=total)

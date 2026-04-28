@@ -52,6 +52,7 @@ async def lifespan(_app: FastAPI):
     _seed_default_period()
     yield
 
+
 app = FastAPI(
     title="SETSS2026 API",
     version="0.1.0",

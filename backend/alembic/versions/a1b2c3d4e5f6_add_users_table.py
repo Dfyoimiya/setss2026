@@ -5,6 +5,7 @@ Revises: ff775dfc2ad3
 Create Date: 2026-04-24 10:00:00.000000
 
 """
+
 from collections.abc import Sequence
 
 import sqlalchemy as sa
@@ -31,14 +32,20 @@ def upgrade() -> None:
         sa.Column("email_verify_token", sa.String(), nullable=True),
         sa.Column("password_reset_token", sa.String(), nullable=True),
         sa.Column("password_reset_expires", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=True),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=True
+        ),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_users_id"), "users", ["id"], unique=False)
     op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
-    op.create_index(op.f("ix_users_email_verify_token"), "users", ["email_verify_token"], unique=False)
-    op.create_index(op.f("ix_users_password_reset_token"), "users", ["password_reset_token"], unique=False)
+    op.create_index(
+        op.f("ix_users_email_verify_token"), "users", ["email_verify_token"], unique=False
+    )
+    op.create_index(
+        op.f("ix_users_password_reset_token"), "users", ["password_reset_token"], unique=False
+    )
 
 
 def downgrade() -> None:
