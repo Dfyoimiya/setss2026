@@ -54,9 +54,9 @@ module.exports = {
           dark: "#0F1923",
         },
         electric: {
-          DEFAULT: "#007ACC",
-          light: "#3399DD",
-          dark: "#005C99",
+          DEFAULT: "#00629B",
+          light: "#1a81b5",
+          dark: "#00629B",
         },
         ivory: "#EBF5FB",
       },

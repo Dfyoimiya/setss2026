@@ -37,13 +37,13 @@ export default function Welcome() {
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-start">
           <div>
             <h2 className="animate-in section-title mb-4">{t('welcomeTitle')}</h2>
-            <div className="animate-in w-12 h-1 bg-[#005C99] mb-6" />
+            <div className="animate-in w-12 h-1 bg-[#00629B] mb-6" />
             <p className="animate-in text-[14px] text-slate-600 leading-relaxed mb-6">{t('welcomeDesc1')}</p>
             <p className="animate-in text-[14px] text-slate-600 leading-relaxed mb-8">{t('welcomeDesc2')}</p>
             <div className="space-y-3">
               {highlights.map((item, idx) => (
                 <div key={idx} className="animate-in flex items-center gap-3">
-                  <item.icon className="w-4 h-4 text-[#005C99] flex-shrink-0" />
+                  <item.icon className="w-4 h-4 text-[#00629B] flex-shrink-0" />
                   <span className="text-[13px] text-slate-600">{t(item.key)}</span>
                 </div>
               ))}
@@ -61,16 +61,16 @@ export default function Welcome() {
               </h3>
               <div className="space-y-2 text-[12px] text-slate-600">
                 <p className="flex items-start gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#005C99] mt-0.5 flex-shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-[#00629B] mt-0.5 flex-shrink-0" />
                   <span className="whitespace-pre-line">{t('venueAddress')}</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5 text-[#005C99] flex-shrink-0" />
+                  <Calendar className="w-3.5 h-3.5 text-[#00629B] flex-shrink-0" />
                   <span>{t('venueDate')}</span>
                 </p>
               </div>
               <a href="http://www.rise-swu.cn/SETSS2026" target="_blank" rel="noopener noreferrer"
-                className="inline-block mt-3 text-[12px] text-[#005C99] hover:underline font-medium">
+                className="inline-block mt-3 text-[12px] text-[#00629B] hover:underline font-medium">
                 {t('visitOfficialWebsite')}
               </a>
             </div>

@@ -1,3 +1,6 @@
+from contextlib import asynccontextmanager
+from datetime import UTC, datetime
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,9 +9,11 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.items import router as items_router
 from app.core.config import settings
+from app.core.database import SessionLocal
 from app.core.exceptions import AppError
 from app.core.response import ApiResponse, ok
 from app.core.status_codes import BizCode
+from app.models.submission_period import SubmissionPeriod
 from app.routers.admin.periods import router as admin_periods_router
 from app.routers.admin.reviews import router as admin_reviews_router
 from app.routers.admin.submissions import router as admin_submissions_router
@@ -17,10 +22,42 @@ from app.routers.reviews import router as reviews_router
 from app.routers.submissions import router as submissions_router
 from app.routers.users import router as users_router
 
+
+def _seed_default_period() -> None:
+    """Create a default submission period for SETSS 2026 if none exist."""
+    db = SessionLocal()
+    try:
+        existing = db.query(SubmissionPeriod).first()
+        if existing is not None:
+            return
+        period = SubmissionPeriod(
+            name="SETSS 2026",
+            description="8th Spring School on Engineering Trustworthy Software Systems",
+            start_date=datetime(2026, 1, 1, tzinfo=UTC),
+            end_date=datetime(2026, 6, 30, tzinfo=UTC),
+            review_deadline=datetime(2026, 7, 31, tzinfo=UTC),
+            rebuttal_deadline=datetime(2026, 8, 15, tzinfo=UTC),
+            final_decision_deadline=datetime(2026, 8, 31, tzinfo=UTC),
+            reviewers_per_paper=3,
+            is_active=True,
+        )
+        db.add(period)
+        db.commit()
+    finally:
+        db.close()
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    _seed_default_period()
+    yield
+
+
 app = FastAPI(
     title="SETSS2026 API",
     version="0.1.0",
     debug=settings.DEBUG,
+    lifespan=lifespan,
 )
 
 app.add_middleware(

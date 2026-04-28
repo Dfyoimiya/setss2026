@@ -153,11 +153,19 @@ export function useGlobalSearch() {
     const { item } = result;
     const isSamePage = location.pathname === item.page;
 
+    const highlightEl = (el: HTMLElement) => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.classList.add('ring-2', 'ring-[#b8860b]', 'ring-offset-4');
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-[#b8860b]', 'ring-offset-4');
+      }, 2500);
+    };
+
     if (isSamePage) {
-      // 同页滚动
+      // 同页滚动 + 高亮
       const el = document.getElementById(item.sectionId);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        highlightEl(el);
       }
     } else {
       // 跨页跳转，携带锚点参数

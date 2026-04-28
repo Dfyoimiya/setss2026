@@ -53,9 +53,18 @@ def change_password(db: Session, user: User, old_password: str, new_password: st
     return True
 
 
-def get_users_paginated(db: Session, skip: int = 0, limit: int = 20) -> tuple[list[User], int]:
-    total = db.query(User).count()
-    users = db.query(User).offset(skip).limit(limit).all()
+def get_users_paginated(
+    db: Session,
+    skip: int = 0,
+    limit: int = 20,
+    keyword: str = "",
+) -> tuple[list[User], int]:
+    q = db.query(User)
+    if keyword:
+        like = f"%{keyword}%"
+        q = q.filter((User.email.ilike(like)) | (User.full_name.ilike(like)))
+    total = q.count()
+    users = q.offset(skip).limit(limit).all()
     return users, total
 
 

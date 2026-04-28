@@ -1,7 +1,7 @@
 import { useLanguage } from '@/hooks/useLanguage';
 
 export default function Footer() {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
 
   const quickLinks = [
     { key: 'home', href: '#hero' },
@@ -55,7 +55,7 @@ export default function Footer() {
               <p>{t('footerAddress3')}</p>
               <p>liubocq@swu.edu.cn</p>
               <a href="https://www.rise-swu.cn/SETSS2026" target="_blank" rel="noopener noreferrer"
-                className="text-[#005C99] hover:underline block mt-2">
+                className="text-[#00629B] hover:underline block mt-2">
                 www.rise-swu.cn/SETSS2026
               </a>
             </div>

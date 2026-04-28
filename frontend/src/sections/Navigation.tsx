@@ -1,34 +1,29 @@
-import { useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import { ChevronDown } from 'lucide-react'
-import { useLanguage } from '@/hooks/useLanguage'
-import { useAuth } from '@/hooks/useAuth'
+import { useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronDown } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useAuthStore } from '@/stores/authStore';
+import { isAdmin } from '@/api/types';
 
 interface NavChild {
-  key: string
-  href: string
-  external?: boolean
+  key: string;
+  href: string;
+  external?: boolean;
 }
 
 interface NavItem {
-  key: string
-  href: string
-  children?: NavChild[]
-  requiresAuth?: boolean
-  requiresRole?: string
+  key: string;
+  href: string;
+  children?: NavChild[];
 }
 
 export default function Navigation() {
-  const { t } = useLanguage()
-  const { user } = useAuth()
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const hasRole = (role?: string) => {
-    if (!role) return true
-    const roles = role.split(',')
-    return roles.some(r => user?.role?.includes(r))
-  }
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const adminUser = isAdmin(user?.role);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const navItems: NavItem[] = [
     { key: 'home', href: '#hero' },
@@ -43,13 +38,15 @@ export default function Navigation() {
     },
     {
       key: 'authors',
-      href: '#authors',
+      href: '/submission',
       children: [
-        { key: 'setss2026Submission', href: '#registration' },
-        { key: 'paperSubmissionInstructions', href: '#registration' },
+        { key: 'submitPaper', href: '/submission' },
       ],
     },
-    { key: 'speakers', href: '#speakers' },
+    {
+      key: 'speakers',
+      href: '/courses',
+    },
     {
       key: 'program',
       href: '#schedule',
@@ -62,47 +59,50 @@ export default function Navigation() {
       key: 'attend',
       href: '#registration',
       children: [
-        { key: 'registration', href: '/registration' },
-        { key: 'gettingThere', href: '/transportation' },
-        { key: 'accommodation', href: '/accommodation' },
+        { key: 'registration', href: '/registration' }, 
+        { key: 'gettingThere', href: '/transportation' }, 
+        { key: 'accommodation', href: '/accommodation' }, 
       ],
     },
     ...(user ? [
-      {
-        key: 'myAccount',
-        href: '/dashboard',
-        children: [
-          { key: 'dashboard', href: '/dashboard' },
-          { key: 'newSubmission', href: '/submissions/new' },
-          ...(hasRole('reviewer') ? [{ key: 'reviewerAssignments', href: '/reviewer/assignments' }] : []),
-          ...(hasRole('admin,organizer') ? [{ key: 'adminPanel', href: '/admin' }] : []),
-        ],
-      },
+      { key: 'dashboard', href: '/dashboard' },
     ] : []),
-  ]
+    ...(adminUser ? [
+      { key: 'adminPanel', href: '/admin/dashboard' },
+    ] : []),
+  ];
 
   const handleMouseEnter = (key: string) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    setActiveDropdown(key)
-  }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setActiveDropdown(key);
+  };
 
   const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => setActiveDropdown(null), 150)
-  }
+    timeoutRef.current = setTimeout(() => setActiveDropdown(null), 150);
+  };
 
   const scrollToSection = (href: string) => {
-    if (href === '#') return
-    const id = href.replace('#', '')
-    const el = document.getElementById(id)
+    if (href === '#') return;
+    const id = href.replace('#', '');
+    const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    setActiveDropdown(null)
-  }
+    setActiveDropdown(null);
+  };
+
+  const handleParentClick = (item: NavItem) => {
+    setActiveDropdown(null);
+    if (item.href.startsWith('/')) {
+      navigate(item.href);
+    } else {
+      scrollToSection(item.href);
+    }
+  };
 
   const renderChild = (child: NavChild) => {
     const className =
-      'progress-bar-hover block w-full text-left px-5 py-2.5 text-[12px] text-slate-600 hover:text-[#005C99] hover:bg-slate-50 transition-colors'
+      'progress-bar-hover block w-full text-left px-5 py-2.5 text-[12px] text-slate-600 hover:text-[#00629B] hover:bg-slate-50 transition-colors';
 
     if (child.external || child.href.startsWith('http')) {
       return (
@@ -116,7 +116,7 @@ export default function Navigation() {
         >
           {t(child.key)}
         </a>
-      )
+      );
     }
 
     if (child.href.startsWith('/')) {
@@ -129,7 +129,7 @@ export default function Navigation() {
         >
           {t(child.key)}
         </Link>
-      )
+      );
     }
 
     return (
@@ -140,11 +140,11 @@ export default function Navigation() {
       >
         {t(child.key)}
       </button>
-    )
-  }
+    );
+  };
 
   return (
-    <nav className="bg-[#005C99] relative z-[55]">
+    <nav className="bg-[#00629B] relative z-[55]">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-11">
           <ul className="flex items-center gap-0">
@@ -156,7 +156,7 @@ export default function Navigation() {
                 onMouseLeave={handleMouseLeave}
               >
                 <button
-                  onClick={() => scrollToSection(item.href)}
+                  onClick={() => handleParentClick(item)}
                   className="nav-link-text relative flex items-center gap-1 px-4 py-3 text-[12px] font-bold tracking-wider text-white uppercase"
                 >
                   {t(item.key)}
@@ -169,7 +169,7 @@ export default function Navigation() {
                     onMouseEnter={() => handleMouseEnter(item.key)}
                     onMouseLeave={handleMouseLeave}
                   >
-                    {item.children.filter(c => true).map((child) => renderChild(child))}
+                    {item.children.map((child) => renderChild(child))}
                   </div>
                 )}
               </li>
@@ -178,5 +178,5 @@ export default function Navigation() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

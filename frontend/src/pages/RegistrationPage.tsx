@@ -80,67 +80,30 @@ export default function RegistrationPage() {
       </div>
 
       {/* Hero 标题区域 */}
-      <div className="relative bg-[#1a365d] overflow-hidden">
-        {/* 精致的背景纹理 */}
-        <div className="absolute inset-0 opacity-[0.03]">
-          <svg width="100%" height="100%">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-        
-        {/* 装饰性圆形 */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#b8860b]/10 rounded-full -translate-y-1/3 translate-x-1/4 blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/5 rounded-full translate-y-1/3 -translate-x-1/4 blur-2xl" />
+      <div className="bg-[#1a365d] relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#b8860b]" />
 
-        {/* 顶部装饰线 */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#b8860b]" />
-
-        <div className="relative max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 sm:pt-28 sm:pb-32 text-center">
-          {/* 徽章标签 */}
-          <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8">
-            <Award className="w-4 h-4 text-[#b8860b]" />
-            <span className="text-[12px] font-semibold text-white/90 tracking-[0.15em] uppercase">
-              8th Spring School
+        <div className="relative max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 rounded-full mb-6">
+            <Award className="w-3.5 h-3.5 text-[#b8860b]" />
+            <span className="text-[11px] font-semibold text-white/80 uppercase tracking-[0.15em]">
+              {t('registrationBadge') || '8th Spring School'}
             </span>
           </div>
 
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-[3.5rem] font-bold text-white tracking-tight leading-[1.15] mb-6">
-            {isZh ? (
-              <>
-                <span className="italic font-normal text-white/80">第八届</span>
-                <br />
-                可信软件系统工程春季学校
-              </>
-            ) : (
-              <>
-                <span className="italic font-normal text-white/80">8th</span>{' '}
-                Spring School on
-                <br />
-                Engineering Trustworthy Software Systems
-              </>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+            {t('registrationHeroTitle') || t('registrationTitle') || (
+              <>{isZh ? '可信软件系统工程春季学校' : 'Spring School on Engineering Trustworthy Software Systems'}</>
             )}
           </h1>
 
-          {/* 精致分隔线 */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="w-16 h-[1px] bg-[#b8860b]/60" />
-            <div className="w-1.5 h-1.5 bg-[#b8860b] rotate-45" />
-            <div className="w-16 h-[1px] bg-[#b8860b]/60" />
-          </div>
-
-          <p className="max-w-[650px] mx-auto text-[15px] text-white/70 leading-[1.8] font-light">
-            {isZh
+          <p className="max-w-[650px] mx-auto text-[14px] text-white/60 leading-relaxed">
+            {t('registrationHeroDesc') || (isZh
               ? '欢迎参加第八届可信软件系统工程春季学校，请仔细阅读以下注册信息，完成报名流程。'
-              : 'Welcome to the 8th Spring School on Engineering Trustworthy Software Systems. Please review the registration details carefully and complete the enrollment process.'}
+              : 'Welcome to the 8th Spring School on Engineering Trustworthy Software Systems. Please review the registration details carefully and complete the enrollment process.')}
           </p>
 
-          {/* 日期速览 */}
-          <div className="mt-10 inline-flex items-center gap-6 bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl px-8 py-4">
+          <div className="mt-8 inline-flex items-center gap-6 bg-white/10 rounded-2xl px-8 py-4">
             <div className="flex items-center gap-2.5">
               <Calendar className="w-4 h-4 text-[#b8860b]" />
               <span className="text-[14px] text-white/90 font-medium">May 11 – 17, 2026</span>
@@ -149,18 +112,13 @@ export default function RegistrationPage() {
             <div className="flex items-center gap-2.5">
               <MapPin className="w-4 h-4 text-[#b8860b]" />
               <span className="text-[14px] text-white/90 font-medium">
-                {isZh ? '西南大学 · 重庆' : 'Southwest University · Chongqing'}
+                {t('registrationHeroLocation') || (isZh ? '西南大学 · 重庆' : 'Southwest University · Chongqing')}
               </span>
             </div>
           </div>
         </div>
 
-        {/* 底部波浪分隔 */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto block">
-            <path d="M0 80L48 74.7C96 69 192 59 288 53.3C384 48 480 48 576 52C672 56 768 64 864 66.7C960 69 1056 67 1152 61.3C1248 56 1344 48 1392 44L1440 40V80H1392C1344 80 1248 80 1152 80C1056 80 960 80 864 80C768 80 672 80 576 80C480 80 384 80 288 80C192 80 96 80 48 80H0Z" fill="#faf9f6" />
-          </svg>
-        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#faf9f6]" />
       </div>
 
       <main id="registration-page" className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-10">
@@ -194,7 +152,7 @@ export default function RegistrationPage() {
               <p className="text-[20px] font-bold text-[#1a2a3a] font-serif">May 11–17, 2026</p>
               <p className="text-[13px] text-[#8a8680] mt-2 flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" />
-                {isZh ? '为期7天' : '7 days duration'}
+                {t('registrationDuration') || (isZh ? '为期7天' : '7 days duration')}
               </p>
             </div>
           </div>
@@ -280,7 +238,7 @@ export default function RegistrationPage() {
                         <span className="text-[15px] text-[#1a2a3a] font-semibold block">
                           {t('registrationFeeLectures')}
                         </span>
-                        <span className="text-[12px] text-[#8a8680] mt-0.5">{isZh ? '全程参与所有课程与活动' : 'Full access to all lectures & activities'}</span>
+                        <span className="text-[12px] text-[#8a8680] mt-0.5">{t('registrationFeeDescFull') || (isZh ? '全程参与所有课程与活动' : 'Full access to all lectures & activities')}</span>
                       </div>
                     </div>
                   </td>
@@ -299,7 +257,7 @@ export default function RegistrationPage() {
                         <span className="text-[15px] text-[#1a2a3a] font-semibold block">
                           {t('registrationFeeWorkshop')}
                         </span>
-                        <span className="text-[12px] text-[#8a8680] mt-0.5">{isZh ? '专题工作坊参与' : 'Workshop participation only'}</span>
+                        <span className="text-[12px] text-[#8a8680] mt-0.5">{t('registrationFeeDescWorkshop') || (isZh ? '专题工作坊参与' : 'Workshop participation only')}</span>
                       </div>
                     </div>
                   </td>
@@ -321,7 +279,7 @@ export default function RegistrationPage() {
             </div>
             <div>
               <h2 className="font-serif text-2xl font-bold text-[#1a2a3a] leading-tight">{t('bankTransferTitle')}</h2>
-              <p className="text-[13px] text-[#8a8680] mt-1.5">{isZh ? '请通过银行转账完成费用支付' : 'Please complete payment via bank transfer'}</p>
+              <p className="text-[13px] text-[#8a8680] mt-1.5">{t('bankTransferHint') || (isZh ? '请通过银行转账完成费用支付' : 'Please complete payment via bank transfer')}</p>
             </div>
           </div>
 
@@ -447,7 +405,7 @@ export default function RegistrationPage() {
             </div>
             <div>
               <h2 className="font-serif text-2xl font-bold text-[#1a2a3a] leading-tight">{t('otherInfoTitle')}</h2>
-              <p className="text-[13px] text-[#8a8680] mt-1.5">{isZh ? '其他重要事项与说明' : 'Additional important information'}</p>
+              <p className="text-[13px] text-[#8a8680] mt-1.5">{t('otherInfoTitle')}</p>
             </div>
           </div>
           <div className="space-y-4">

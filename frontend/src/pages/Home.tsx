@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useAuth } from '@/hooks/useAuth';
 import Header from '@/sections/Header';
 import Navigation from '@/sections/Navigation';
 import Hero from '@/sections/Hero';
@@ -15,9 +16,12 @@ import Footer from '@/sections/Footer';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+  const { user, isAdmin, logout } = useAuth();
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const lenis = new Lenis({ lerp: 0.12, smoothWheel: true });
     lenisRef.current = lenis;
 
@@ -36,7 +40,7 @@ export default function Home() {
 
   return (
     <div className="relative bg-white">
-      <Header />
+      <Header user={user} isAdmin={isAdmin} logout={logout} />
       <Navigation />
 
       <main>

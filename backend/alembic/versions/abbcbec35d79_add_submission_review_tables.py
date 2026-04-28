@@ -5,6 +5,7 @@ Revises: a1b2c3d4e5f6
 Create Date: 2026-04-25 01:36:00.000000
 
 """
+
 from collections.abc import Sequence
 
 import sqlalchemy as sa
@@ -76,7 +77,10 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_submission_files_id"), "submission_files", ["id"], unique=False)
     op.create_index(
-        op.f("ix_submission_files_submission_id"), "submission_files", ["submission_id"], unique=False
+        op.f("ix_submission_files_submission_id"),
+        "submission_files",
+        ["submission_id"],
+        unique=False,
     )
 
     # review_assignments
@@ -97,9 +101,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["reviewer_id"], ["users.id"]),
         sa.ForeignKeyConstraint(["assigned_by"], ["users.id"]),
     )
-    op.create_index(
-        op.f("ix_review_assignments_id"), "review_assignments", ["id"], unique=False
-    )
+    op.create_index(op.f("ix_review_assignments_id"), "review_assignments", ["id"], unique=False)
     op.create_index(
         op.f("ix_review_assignments_submission_id"),
         "review_assignments",
@@ -132,9 +134,7 @@ def upgrade() -> None:
         sa.UniqueConstraint("assignment_id"),
     )
     op.create_index(op.f("ix_reviews_id"), "reviews", ["id"], unique=False)
-    op.create_index(
-        op.f("ix_reviews_assignment_id"), "reviews", ["assignment_id"], unique=True
-    )
+    op.create_index(op.f("ix_reviews_assignment_id"), "reviews", ["assignment_id"], unique=True)
 
     # rebuttals
     op.create_table(
@@ -151,9 +151,7 @@ def upgrade() -> None:
         sa.UniqueConstraint("review_id"),
     )
     op.create_index(op.f("ix_rebuttals_id"), "rebuttals", ["id"], unique=False)
-    op.create_index(
-        op.f("ix_rebuttals_review_id"), "rebuttals", ["review_id"], unique=True
-    )
+    op.create_index(op.f("ix_rebuttals_review_id"), "rebuttals", ["review_id"], unique=True)
 
 
 def downgrade() -> None:
