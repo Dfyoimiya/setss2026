@@ -149,7 +149,7 @@ export default function PaperDetail() {
             <div>
               <label className="block text-sm font-medium text-[#1E293B] mb-1">摘要</label>
               <textarea
-                value={editForm.abstract || ''}
+                value={(editForm.abstract || '').replace(/\\n/g, '\n')}
                 onChange={(e) => setEditForm((p) => ({ ...p, abstract: e.target.value }))}
                 className="input-standard min-h-[120px] resize-y"
               />
@@ -167,7 +167,9 @@ export default function PaperDetail() {
           <dl className="space-y-4">
             <div>
               <dt className="text-xs text-[#64748B] mb-1">摘要</dt>
-              <dd className="text-sm text-[#1E293B] leading-relaxed whitespace-pre-wrap">{submission.abstract}</dd>
+              <dd className="text-sm text-[#1E293B] leading-relaxed whitespace-pre-wrap">
+                {(submission.abstract || '').replace(/\\n/g, '\n')}
+              </dd>
             </div>
             <div>
               <dt className="text-xs text-[#64748B] mb-1">关键词</dt>

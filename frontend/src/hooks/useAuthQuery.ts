@@ -33,7 +33,7 @@ export function useRegister() {
   return useMutation({
     mutationFn: (data: RegisterRequest) => authService.register(data),
     onSuccess: () => {
-      toast.success('注册成功，请登录')
+      // 注册成功后由 AuthModal 自动调用登录，不显示提示
     },
   })
 }

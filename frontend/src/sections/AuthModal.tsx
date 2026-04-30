@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { X, User, Mail, Lock, Building2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { useLanguage } from '@/hooks/useLanguage'
 import { useLogin, useRegister } from '@/hooks/useAuthQuery'
 import type { LoginRequest, RegisterRequest } from '@/api/types'
@@ -44,7 +45,13 @@ export default function AuthModal({ isOpen, onClose, mode, setMode, onLogin }: A
       const data: RegisterRequest = { email, password, full_name: fullName, institution: institution || undefined }
       registerMutation.mutate(data, {
         onSuccess: () => {
-          setMode('login')
+          const loginData: LoginRequest = { email, password }
+          loginMutation.mutate(loginData, {
+            onError: () => {
+              toast.info('注册成功，请手动登录')
+              setMode('login')
+            },
+          })
           resetForm()
         },
       })
